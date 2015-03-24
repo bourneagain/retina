@@ -1,0 +1,23 @@
+{
+    "queryType": "groupBy",
+    "dataSource": "wikipedia",
+    "granularity": "day",
+    "dimensions": [
+        "added"
+    ],
+    "aggregations": [
+        {
+            "type": "longSum",
+            "name": "sample_name1",
+            "fieldName": "added"
+        }
+    ],
+    "intervals": [
+        "2012-01-01T00:00:00.000/2015-01-03T00:00:00.000"
+    ],
+    "having": {
+        "type": "greaterThan",
+        "aggregation": "sample_name1",
+        "value": 0
+    }
+}

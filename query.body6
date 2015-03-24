@@ -1,0 +1,18 @@
+{
+  "queryType": "search",
+  "dataSource": "wikipedia",
+  "granularity": "day",
+  "searchDimensions": [
+	"phone_imei"
+  ],
+  "query": {
+    "type": "fragment",
+    "value": [1]
+  },
+  "sort" : {
+    "type": "lexicographic"
+  },
+  "intervals": [
+    "2010-01-01T00:00:00.000/2015-01-03T00:00:00.000"
+  ]
+}
