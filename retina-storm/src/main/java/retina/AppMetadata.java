@@ -7,8 +7,10 @@ package retina;
 public class AppMetadata {
     String appid = "";
     String appversion = "";
-    AppMetadata(String id, String version) {
+    String appname = "";
+    AppMetadata(String id, String version, String name) {
         this.appid = id;
         this.appversion = version;
+        this.appname = name;
     }
 }

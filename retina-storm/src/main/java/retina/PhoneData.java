@@ -1,4 +1,4 @@
-package retina;
+package gson;
 
 /**
  * Created by saikat on 3/24/15.
