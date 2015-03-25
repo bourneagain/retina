@@ -1,0 +1,21 @@
+<html>                                                                        
+
+
+<script>
+function testme(){
+var ajaxVariable=new XMLHttpRequest();
+ajaxVariable.open("GET","ajax.php?name=shyam&group=MITG",false);
+ajaxVariable.send();
+document.getElementById("ajaxOP").innerHTML=ajaxVariable.responseText;
+}
+</script>
+<input type="button" value="TEST FOR AJAX" onclick="testme()">
+
+
+<input type="button" value="TEST FOR AJAX2" onclick="testme2()">
+
+
+
+<div id="ajaxOP"> test</div>
+
+</html>
