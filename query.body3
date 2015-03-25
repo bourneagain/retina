@@ -1,9 +1,0 @@
-{
-  "queryType": "timeseries", 
-  "dataSource": "wikipedia", 
-  "intervals": [ "2000-01-01/2020-01-01" ], 
-  "granularity": "all", 
-  "aggregations": [
-     {"type": "doubleSum", "fieldName": "phoneimei", "name": "phone_imei"}
-  ]
-}
