@@ -10,14 +10,15 @@ import com.google.gson.GsonBuilder;
 public class RetinaEvent {
     // final JSON fields
     public String timestamp = "";
+    public String eventid = "";
     public String phoneimei = "";
     public String appid = "";
-    public String eventid = "";
     public String phoneversion = "";
     public String phonemodel = "";
     public String phonebaseband = "";
     public String phonebuild = "";
     public String appversion = "";
+    public String appname = "";
     public String eventtype = "";
     public String eventwarn = "";
     public String eventerror = "";
@@ -27,6 +28,7 @@ public class RetinaEvent {
     RetinaEvent(PhoneMetaData p, AppMetadata a) {
         this.phoneimei = p.phoneImei;
         this.appid = a.appid;
+        this.appname = a.appname;
         this.phoneversion = p.phoneVersion;
         this.phonemodel = p.phoneModel;
         this.phonebaseband = p.phoneBaseband;
@@ -38,6 +40,7 @@ public class RetinaEvent {
         //this.timestamp
         this.phoneimei = p.phoneImei;
         this.appid = a.appid;
+        this.appname = a.appname;
         this.phoneversion = p.phoneVersion;
         this.phonemodel = p.phoneModel;
         this.phonebaseband = p.phoneBaseband;

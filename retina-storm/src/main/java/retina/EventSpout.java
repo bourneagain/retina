@@ -62,7 +62,7 @@ public class EventSpout extends BaseRichSpout {
   public void nextTuple() {
       Utils.sleep(5000);
       PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
-              "lollypop5.0.1 nexus5 m897 LRX22C\napp1 1.0\n");
+              "lollypop5.0.1 nexus5 m897 LRX22C\nappid 1.0 appname\n");
 
       PhoneData p_H = new PhoneData(generateTimeStamp(), "1", "H", "1234", "app1",
               "lollypop5.0.1 nexus5 m897 LRX22C\napp1 1.0\n");

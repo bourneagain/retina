@@ -28,18 +28,9 @@ import com.google.gson.GsonBuilder;
  */
 public class ParseBolt extends BaseRichBolt
 {
-    // To output tuples from this bolt to the count bolt
     OutputCollector collector;
-    //private String[] skipWords = {"http://", "https://", "(", "a", "an", "the", "for", "retweet", "RETWEET", "follow", "FOLLOW"};
     GsonBuilder builder;
     Gson gson;
-    AppMetadata parseAppMetaData(String log) {
-        String delims = ":";
-        String[] tokens = log.split(delims);
-        // for now we have fixed fields, and order of fields
-        AppMetadata a = new AppMetadata(tokens[1], tokens[2]);
-        return a;
-    }
 
     @Override
     public void prepare(
@@ -78,6 +69,7 @@ public class ParseBolt extends BaseRichBolt
         Gson gson = builder.create();
         PhoneData pd = gson.fromJson(log.substring(index), PhoneData.class);
         return parsePhoneData(pd, timestamp, geventId);
+
     }
 
     static String parsePhoneData(PhoneData pd, String timestamp, String geventid) {
@@ -110,7 +102,7 @@ public class ParseBolt extends BaseRichBolt
                     phonemeta[3]);//build
             String[] appmeta = tokens[1].split(" ");
             // <id>, <version>
-            AppMetadata amdata = new AppMetadata(appmeta[0], appmeta[1]);
+            AppMetadata amdata = new AppMetadata(appmeta[0], appmeta[1], appmeta[2]);
             re  = new RetinaEvent(pmdata, amdata, e);
             re.timestamp = timestamp;
             re.eventid = geventid;
