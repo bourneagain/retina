@@ -1,7 +1,7 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
 <head>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<link href="css/sidebar.css" rel="stylesheet">
+<link rel="stylesheet" href="css/iThing.css" type="text/css" />
 </head>
 <style>
 body { 
@@ -63,6 +63,14 @@ padding-left: 70px;
           </div>
       </td>
       </tr>
+	  <tr>
+	   <td>
+		 Intervals		
+	   </td>
+	   <td>
+			<div id='slider'></slider>	
+	   </td>
+	  </tr>
        <tr>
           <td>Dimensions</td>
           <td>
@@ -95,8 +103,7 @@ padding-left: 70px;
 Sample Input : 
 <input id='input' size='100'></input>
 <br>
-
-</div>{
+</div>
  
 
 <!-- 
@@ -114,14 +121,43 @@ Sample Input :
 }
   -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+<script src="jQRangeSlider-min.js"></script>
+<script src="jQDateRangeSlider-min.js"></script>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script>
+
+
+//var bounds = $("#slider").dateRangeSlider("option", "bounds");
+//$(document).ready(function(){
+
+var min = new Date(2015, 0, 1),
+    max = new Date();
+
+    $("#slider").dateRangeSlider({
+      bounds: {min: min, max: max},
+      defaultValues: {
+        min: new Date(2015, 0, 1),
+        max: max 
+      }
+    });
+
 
 function formQuery(queryString){
   var resultJson = "";
 
 }
+
+$("#slider").bind("valuesChanged", function(e, data){
+  min_date = data.values.min;
+  max_date = data.values.max;
+});
+
+
 $('#query').click(function(){
         var json = $("#input").val();   
         var topic = "wikipedia";
@@ -132,7 +168,10 @@ $('#query').click(function(){
         for (i = 0; i < radios.length; i++) { 
 			       queryMap[radios[i].name] = radios[i].value  
         }
-
+		var sliderDates = $("#slider").dateRangeSlider("values");
+//	$("#slider").bind("valuesChanged", function(e, data){
+//  	console.log("Values just changed. min: " + data.values.min + " max: " + data.values.max);
+//	});
 
         //console.log("json is" + json);
         console.log(queryMap);
