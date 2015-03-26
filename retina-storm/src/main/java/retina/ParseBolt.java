@@ -48,11 +48,11 @@ public class ParseBolt extends BaseRichBolt
     public void execute(Tuple tuple)
     {
         String rawlog = tuple.getString(0);
+        System.out.println("parser bolt: "+ rawlog);
         String json = ParseString(rawlog);
-        System.out.println("parser-bolt-Emitting->" + json);
-        //System.out.println("parser bolt: "+ rawlog);
-
+        System.out.println("Emitting ParseBolt:" + json);
         collector.emit(new Values(json));
+
         //collector.emit(new Values(rawlog));
     }
 
