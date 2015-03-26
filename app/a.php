@@ -117,49 +117,21 @@ padding-left: 70px;
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
+                <th>Engine</th>
+                <th>hrowser</th>
+                <th>platform</th>
+                <th>version</th>
             </tr>
         </thead>
 <tfoot>
             <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
+                <th>Engine</th>
+                <th>hrowser</th>
+                <th>platform</th>
+                <th>version</th>
             </tr>
         </tfoot>
 <tbody>
-            <tr>
-                <td>Tiger Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011/04/25</td>
-                <td>$320,800</td>
-            </tr>
-            <tr>
-                <td>Garrett Winters</td>
-                <td>Accountant</td>
-                <td>Tokyo</td>
-                <td>63</td>
-                <td>2011/07/25</td>
-                <td>$170,750</td>
-            </tr>
-            <tr>
-                <td>Ashton Cox</td>
-                <td>Junior Technical Author</td>
-                <td>San Francisco</td>
-                <td>66</td>
-                <td>2009/01/12</td>
-                <td>$86,000</td>
-            </tr>
  </tbody>
     </table>
 
@@ -306,22 +278,46 @@ $('#query').click(function(){
 		queryMap["filter"]["value"]=filterSelectedValue;
 
         console.log(queryMap);
+		$.ajax({ 
+				type : "post",
+				//url: "http://146.148.85.88:8082/druid/v2/",
+				url: "b.php",
+				data: {
+				//      "queryType":"timeBoundary",
+				//      "dataSource":"wikipedia"
+				"json" : JSON.stringify(queryMap)
+				},
+				//dataType : 'json',
+				success : function(data){
+						var json = {
+						BrowserStats : [
+						{ engine: "Trident", browser: "IE 4.0", platform: "Win95", version: 4 },
+						{ engine: "Trident", browser: "IE 5.0", platform: "Win95", version: 5 },
+						{ engine: "Trident", browser: "IE 5.5", platform: "Win95", version: 5.5 }
+						]
+						};
+var data2=[];
+for(i=0;i<json.BrowserStats.length;i++){
+var temp = [];
+temp.push(json.BrowserStats[i].engine);
+temp.push(json.BrowserStats[i].browser);temp.push(json.BrowserStats[i].platform);temp.push(json.BrowserStats[i].version);
+data2.push(temp);
+}
 
-        $.ajax({
-                type : "post",
-                //url: "http://146.148.85.88:8082/druid/v2/",
-                url: "b.php",
-                data: {
-                //      "queryType":"timeBoundary",
-                //      "dataSource":"wikipedia"
-                        "json" : JSON.stringify(queryMap)
-                },
-                //dataType : 'json',
-                success : function(data){
-                        $('#results').val(data);
-//      console.log(data);
-                }
-        })
+console.log(data2);
+						$('#example').dataTable( {
+								"aaData": data2,
+								"aoColumns": [
+								{ "sTitle": "Engine" },
+								{ "sTitle": "Browser" },
+								{ "sTitle": "Platform" },
+								{ "sTitle": "Version"}
+								]
+								}); // datatables end
+
+				}	
+		//      console.log(data);
+		}); // ajax end
 }); 
 // end of click function
 
