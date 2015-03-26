@@ -3,6 +3,7 @@ package retina;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
+import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -15,17 +16,42 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import storm.kafka.*;
 
 class MainTopology
 {
+    static String TOPIC_NAME = "phone-data-test";
+    static SpoutConfig kafkaConfig;
+    static void setKafkaSpout() {
+        BrokerHosts brokerHosts = new ZkHosts("localhost:2181");
+        kafkaConfig = new SpoutConfig(brokerHosts, TOPIC_NAME, "", "storm");
+        //kafkaConfig.
+        //kafkaConfig.forceStartOffsetTime(readFromMode  /* either earliest or current offset */);
+        kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
+    }
     public static void main(String[] args) throws Exception
     {
         // create the topology
         TopologyBuilder builder = new TopologyBuilder();
+        boolean kafkaSpout  = true;
+
+        String sourceSpout = "event-spout";
+        SimulatePhoneData sd = new SimulatePhoneData(20, 1000);
 
         // attach the tweet spout to the topology - parallelism of 1
-        builder.setSpout("event-spout", new EventSpout(), 1);
-        builder.setBolt("parse-event-bolt", new ParseBolt(), 1).shuffleGrouping("event-spout");
+        if (kafkaSpout) {
+            sourceSpout = "kafka-spout";
+            setKafkaSpout();
+            builder.setSpout(sourceSpout, new KafkaSpout(kafkaConfig), 1);
+
+        } else {
+            sourceSpout = "event-spout";
+            builder.setSpout(sourceSpout, new EventSpout(), 1);
+        }
+
+        //builder.setSpout(sourceSpout, new EventSpout(), 1);
+        builder.setBolt("timestamp-bolt", new TimestampBolt(), 1).shuffleGrouping(sourceSpout);
+        builder.setBolt("parse-event-bolt", new ParseBolt(), 1).shuffleGrouping("timestamp-bolt");
         builder.setBolt("kafka-producer-bolt", new KafkaBolt(), 1).shuffleGrouping("parse-event-bolt");
 
         // create the default config object
@@ -43,6 +69,7 @@ class MainTopology
 
             // create the topology and submit with config
             StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+            (new Thread(sd)).start();
 
         } else {
 
@@ -56,7 +83,7 @@ class MainTopology
 
             // submit the topology to the local cluster
             cluster.submitTopology("retina-storm", conf, builder.createTopology());
-
+            (new Thread(sd)).start();
             // let the topology run for 300 seconds. note topologies never terminate!
             Utils.sleep(300000);
 

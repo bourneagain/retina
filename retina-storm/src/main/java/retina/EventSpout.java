@@ -60,7 +60,7 @@ public class EventSpout extends BaseRichSpout {
 
   @Override
   public void nextTuple() {
-      Utils.sleep(5000);
+      Utils.sleep(10000);
       PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
               "lollypop5.0.1 nexus5 m897 LRX22C\nappid 1.0 appname\n");
 
@@ -92,11 +92,11 @@ public class EventSpout extends BaseRichSpout {
 //        "four score and seven years ago", "snow white and the seven dwarfs", "i am at two with nature" };
 //      String sentence = sentences[_rand.nextInt(sentences.length)];
 
-      String op = currTime + " " + generateEventID() + " " + json;
-      System.out.println("Emitting sentence:" + op);
+      //String op = currTime + " " + generateEventID() + " " + json;
+      System.out.println("Emitting EventSpout:" + json);
       //System.out.println("Emitting sentence:" + sentence);
       //_collector.emit(new Values(sentence));
-      _collector.emit(new Values(op));
+      _collector.emit(new Values(json));
   }
 
   @Override
