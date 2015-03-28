@@ -60,7 +60,9 @@ public class SimulatePhoneData implements Runnable {
 
         PhoneData p_L = new PhoneData(generateTimeStamp(), "1", "L", "1234", "app1",
                 "Error:error print\nWarn: warn print\nClick:component1\n"
-                        + "Click:component1\nError:error print\n"
+                        + "Crash:crash1\nError:error print1\n"
+                        + "Crash:crash2\nError:error print2\n"
+                        + "Crash:crash3\nError:error print3\n"
                         + "Click:component2\n");
         int i = 0;
         String json;

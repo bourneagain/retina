@@ -75,6 +75,10 @@ public class ParseBolt extends BaseRichBolt
     static String parsePhoneData(PhoneData pd, String timestamp, String geventid) {
         Hashtable<String, String> ht =  new Hashtable<String, String>();
         Hashtable<String, Integer> ht_click =  new Hashtable<String, Integer>();
+        Integer globalCrashCount = 0;
+        Integer globalErrorCount = 0;
+        Integer globalWarnCount = 0;
+
         String opstr = "[{}]";
         Event e  =  new Event();
         e.appId = pd.appid;
@@ -111,7 +115,15 @@ public class ParseBolt extends BaseRichBolt
             String[] tokens = pd.logs.split("\n");
             String temp;
             for (String token : tokens) {
-                if (token.contains("Error")) {
+                if (token.contains("Crash")) {
+                    globalCrashCount++;
+                    if (ht.get("Crash") ==  null) {
+                        ht.put("Crash", token);
+                    } else {
+                        ht.put("Crash", ht.get("Crash") + "\n" + token);
+                    }
+                }else if (token.contains("Error")) {
+                    globalErrorCount++;
                     // append the raw logs to the appropriate key-value
                     if (ht.get("Error") ==  null) {
                         ht.put("Error", token);
@@ -119,6 +131,7 @@ public class ParseBolt extends BaseRichBolt
                         ht.put("Error", ht.get("Error") + "\n" + token);
                     }
                 } else if ( token.contains("Warn")) {
+                    globalWarnCount++;
                     if (ht.get("Warn") ==  null) {
                         ht.put("Warn", token);
                     } else {
@@ -150,10 +163,14 @@ public class ParseBolt extends BaseRichBolt
             e.eventCrash = crashstr;
             e.eventError = errorstr;
             e.eventWarn = warnstr;
+
             e.eventClick = clickstr;
             re = new RetinaEvent(e);
             re.timestamp = timestamp;
             re.eventid = geventid;
+            re.crashcount = Integer.toString(globalCrashCount);
+            re.errorcount = Integer.toString(globalErrorCount);
+            re.crashcount = Integer.toString(globalWarnCount);
             opstr = re.toJSON();
         }
 

@@ -24,6 +24,10 @@ public class RetinaEvent {
     public String eventerror = "";
     public String eventcrash = "";
     public String eventclick = "";
+    public String crashcount = "";
+    public String errorcount = "";
+    public String warncount = "";
+
 
     RetinaEvent(PhoneMetaData p, AppMetadata a) {
         this.phoneimei = p.phoneImei;

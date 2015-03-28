@@ -19,6 +19,7 @@ public class Event {
           String error,
           String crash,
           String click,
+          String count,
           String app,
           String phone) {
         this.appId = app;
