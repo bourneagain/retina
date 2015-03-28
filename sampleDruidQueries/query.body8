@@ -1,0 +1,10 @@
+{
+  "queryType": "timeseries",
+  "dataSource": "wikipedia",
+  "granularity": "all",
+  "filter": { "type": "selector", "dimension": "language", "value": "ja" },
+  "aggregations": [
+    { "type": "longSum", "name": "phoneimei", "fieldName": "phoneimei" }
+  ],    
+  "intervals": [ "2010-01-01T00:00:00.000/2020-01-03T00:00:00.000" ]
+}
