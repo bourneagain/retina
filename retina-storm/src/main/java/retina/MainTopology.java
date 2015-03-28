@@ -36,7 +36,7 @@ class MainTopology
         boolean kafkaSpout  = true;
 
         String sourceSpout = "event-spout";
-        SimulatePhoneData sd = new SimulatePhoneData(20, 1000);
+        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 1000);
 
         // attach the tweet spout to the topology - parallelism of 1
         if (kafkaSpout) {

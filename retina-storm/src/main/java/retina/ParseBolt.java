@@ -168,9 +168,9 @@ public class ParseBolt extends BaseRichBolt
             re = new RetinaEvent(e);
             re.timestamp = timestamp;
             re.eventid = geventid;
-            re.crashcount = Integer.toString(globalCrashCount);
-            re.errorcount = Integer.toString(globalErrorCount);
-            re.crashcount = Integer.toString(globalWarnCount);
+            re.crashcount = globalCrashCount;
+            re.errorcount = globalErrorCount;
+            re.crashcount = globalWarnCount;
             opstr = re.toJSON();
         }
 
