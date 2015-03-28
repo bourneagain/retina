@@ -1,4 +1,4 @@
 {
    "queryType":"timeBoundary",
-   "dataSource":"wikipedia"
+   "dataSource":"test"
 }
