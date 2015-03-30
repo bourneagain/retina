@@ -1,0 +1,13 @@
+{
+  "queryType": "topN",
+  "dataSource": "test", 
+  "granularity": "all", 
+  "dimension": "appid",
+  "metric": "errorcount",
+  "threshold" : 10,
+  "aggregations": [
+    {"type": "longSum", "fieldName": "errorcount", "name": "errorcount"}
+  ], 
+  "filter": { "type": "selector", "dimension": "eventtype", "value": "L" }, 
+  "intervals": ["2012-10-01T00:00/2020-01-01T00"]
+}
