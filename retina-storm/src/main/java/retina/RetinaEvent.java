@@ -60,6 +60,7 @@ public class RetinaEvent {
 
     RetinaEvent(Event e) {
         //this.timestamp
+
         this.phoneimei = e.phoneId;
         this.appid = e.appId;
         this.eventtype = e.eventType;
