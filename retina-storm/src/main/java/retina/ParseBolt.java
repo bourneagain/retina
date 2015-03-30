@@ -53,8 +53,12 @@ public class ParseBolt extends BaseRichBolt
         String rawlog = tuple.getString(0);
         System.out.println("parser bolt: "+ rawlog);
         String json = ParseString(rawlog);
-        System.out.println("Emitting ParseBolt:" + json);
-        collector.emit(new Values(json));
+        if (json.equals("[{}]") ) {
+            System.out.printf(" NULL JSON OUT OF ORDER MESSAGE READ");
+        } else {
+            System.out.println("Emitting ParseBolt:" + json);
+            collector.emit(new Values(json));
+        }
 
         //collector.emit(new Values(rawlog));
     }
@@ -84,8 +88,9 @@ public class ParseBolt extends BaseRichBolt
     }
 
     public  String parsePhoneData(PhoneData pd, String timestamp, String geventid) {
-        Hashtable<String, String> ht =  new Hashtable<String, String>();
-        Hashtable<String, Integer> ht_click =  new Hashtable<String, Integer>();
+        System.out.println("parsephonebolt debug");
+        Hashtable<String, String> ht = new Hashtable<String, String>();
+        Hashtable<String, Integer> ht_click = new Hashtable<String, Integer>();
         Integer globalCrashCount = 0;
         Integer globalErrorCount = 0;
         Integer globalWarnCount = 0;
@@ -98,7 +103,7 @@ public class ParseBolt extends BaseRichBolt
 
 
         String opstr = "[{}]";
-        Event e  =  new Event();
+        Event e = new Event();
         e.appId = pd.appid;
         e.phoneId = pd.phoneimei;
         e.eventType = pd.eventtype;
@@ -113,28 +118,33 @@ public class ParseBolt extends BaseRichBolt
             ArrayList<String> appDetails = new ArrayList<String>();
             ArrayList<String> phoneDetails = new ArrayList<String>();
 
-            phoneDetails = returnMapDetails(phoneDetailsMap, pd.phoneimei);
-            appDetails = returnMapDetails(appDetailsMap, pd.appid);
-            AppMetadata am = new AppMetadata(pd.appid,appDetails.get(0), appDetails.get(1));
-            PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, phoneDetails.get(0), phoneDetails.get(1), phoneDetails.get(2), phoneDetails.get(3));
-            appDetails = null;
-            phoneDetails = null;
+            if (phoneDetailsMap.containsKey(pd.phoneimei) && appDetailsMap.containsKey(pd.appid)) {
+                phoneDetails = returnMapDetails(phoneDetailsMap, pd.phoneimei);
+                appDetails = returnMapDetails(appDetailsMap, pd.appid);
 
-            // ignore log
-            // if H means M must have come before and the app and phone map details are set
+                AppMetadata am = new AppMetadata(pd.appid, appDetails.get(0), appDetails.get(1));
+                PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, phoneDetails.get(0), phoneDetails.get(1), phoneDetails.get(2), phoneDetails.get(3));
+                appDetails = null;
+                phoneDetails = null;
 
-            re =  new RetinaEvent(pm,am,e);
+                // ignore log
+                // if H means M must have come before and the app and phone map details are set
+
+                re = new RetinaEvent(pm, am, e);
 
 //            re = new RetinaEvent(p,a, e);
-            re.timestamp = timestamp;
-            re.eventid = geventid;
-            opstr = re.toJSON();
+                re.timestamp = timestamp;
+                re.eventid = geventid;
+                opstr = re.toJSON();
+            } else {
+                opstr = null;
+            }
         } else if (pd.eventtype.equalsIgnoreCase("M")) {
             String[] tokens = pd.logs.split("\n");
 
-          //        PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
-          // log :[0] "lollypop5.0.1 nexus5 m897 LRX22C"
-          // log :[1] " appid 1.0 appname");
+            //        PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
+            // log :[0] "lollypop5.0.1 nexus5 m897 LRX22C"
+            // log :[1] " appid 1.0 appname");
 
             //if event type is metadata: there will be two lines in the log field, phone metadata and app metadata
 //        phonemetadata - <phoneversion> <phonemodel> <phonebaseband> <phonebuild>
@@ -144,7 +154,7 @@ public class ParseBolt extends BaseRichBolt
             // second line is app meta
             String[] phonemeta = tokens[0].split(" ");
             // string format : <phoneversion> <phonemodel> <phonebaseband> <phonebuild>
-            PhoneMetaData pmdata =  new PhoneMetaData(pd.phoneimei,
+            PhoneMetaData pmdata = new PhoneMetaData(pd.phoneimei,
                     phonemeta[0], // version
                     phonemeta[1], //model
                     phonemeta[2], // baseband
@@ -162,40 +172,33 @@ public class ParseBolt extends BaseRichBolt
             tempPhoneData = null; // for gc
 
             AppMetadata amdata = new AppMetadata(appmeta[0], appmeta[1], appmeta[2]);
-            re  = new RetinaEvent(pmdata, amdata, e);
+            re = new RetinaEvent(pmdata, amdata, e);
             re.timestamp = timestamp;
             re.eventid = geventid;
             // set the appid parameters here so it can be used when message of L or H comes next
             ArrayList<String> tempAppData = new ArrayList<String>(2);
             tempAppData.add(appmeta[1]);
             tempAppData.add(appmeta[2]);
-            appDetailsMap.put(appmeta[0],tempAppData);
+            appDetailsMap.put(appmeta[0], tempAppData);
             tempAppData = null;
 
-            ///
-
-            AppMetadata am = new AppMetadata(pd.appid,tempAppData.get(0), tempAppData.get(1));
-            PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, tempPhoneData.get(0), tempPhoneData.get(1), tempPhoneData.get(2), tempAppData.get(3));
+            AppMetadata am = new AppMetadata(pd.appid, tempAppData.get(0), tempAppData.get(1));
+            PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, tempPhoneData.get(0), tempPhoneData.get(1), tempPhoneData.get(2), tempPhoneData.get(3));
             tempPhoneData = null;
-            tempAppData= null;
+            tempAppData = null;
 
             // ignore log
             // if H means M must have come before and the app and phone map details are set
 
-            re =  new RetinaEvent(pm,am,e);
+            re = new RetinaEvent(pm, am, e);
 
 //            re = new RetinaEvent(p,a, e);
             re.timestamp = timestamp;
             re.eventid = geventid;
             opstr = re.toJSON();
 
-            ///
-
-
-
-            opstr = re.toJSON();
-
         } else if (pd.eventtype.equalsIgnoreCase("L")) {
+            if ( phoneDetailsMap.containsKey(pd.phoneimei) && appDetailsMap.containsKey(pd.appid) ) {
             String[] tokens = pd.logs.split("\n");
             String temp;
             for (String token : tokens) {
@@ -203,22 +206,22 @@ public class ParseBolt extends BaseRichBolt
 
                 if (token.contains("Crash")) {
                     globalCrashCount++;
-                    if (ht.get("Crash") ==  null) {
+                    if (ht.get("Crash") == null) {
                         ht.put("Crash", token);
                     } else {
                         ht.put("Crash", ht.get("Crash") + "\n" + token);
                     }
-                }else if (token.contains("Error")) {
+                } else if (token.contains("Error")) {
                     globalErrorCount++;
                     // append the raw logs to the appropriate key-value
-                    if (ht.get("Error") ==  null) {
+                    if (ht.get("Error") == null) {
                         ht.put("Error", token);
                     } else {
                         ht.put("Error", ht.get("Error") + "\n" + token);
                     }
-                } else if ( token.contains("Warn")) {
+                } else if (token.contains("Warn")) {
                     globalWarnCount++;
-                    if (ht.get("Warn") ==  null) {
+                    if (ht.get("Warn") == null) {
                         ht.put("Warn", token);
                     } else {
                         ht.put("Warn", ht.get("Warn") + "\n" + token);
@@ -232,7 +235,7 @@ public class ParseBolt extends BaseRichBolt
                     } else {
                         ht_click.put(line[1], n + 1);
                     }
-                }else{
+                } else {
                     // take the first one which contains phoneimei and app id; get datails from appDetailsMap and phoneDetailsMap
 //                    PhoneData(generateTimeStamp(), "1", "L", "1234", "app1",
 //                            "Error:error print\nWarn: warn print\nClick:component1\n"
@@ -264,7 +267,7 @@ public class ParseBolt extends BaseRichBolt
 //                    for ( String el : appDetailsMap.get(Integer.parseInt(pd.appid))) {
 //                        appDetails.add(el);
 //                    }
-                    AppMetadata am = new AppMetadata(pd.appid,appDetails.get(0), appDetails.get(1));
+                    AppMetadata am = new AppMetadata(pd.appid, appDetails.get(0), appDetails.get(1));
                     PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, phoneDetails.get(0), phoneDetails.get(1), phoneDetails.get(2), phoneDetails.get(3));
 
                 }
@@ -272,7 +275,7 @@ public class ParseBolt extends BaseRichBolt
 
             Enumeration<String> htclickKey = ht_click.keys();
             String clickstr = "";
-            while(htclickKey.hasMoreElements()) {
+            while (htclickKey.hasMoreElements()) {
                 String key = htclickKey.nextElement();
                 String val = Integer.toString(ht_click.get(key));
                 clickstr += key + ":" + val + " ";
@@ -291,12 +294,12 @@ public class ParseBolt extends BaseRichBolt
             ArrayList<String> appDetails = returnMapDetails(appDetailsMap, pd.appid);
 
 
-            AppMetadata am = new AppMetadata(pd.appid,appDetails.get(0), appDetails.get(1));
+            AppMetadata am = new AppMetadata(pd.appid, appDetails.get(0), appDetails.get(1));
             PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, phoneDetails.get(0), phoneDetails.get(1), phoneDetails.get(2), phoneDetails.get(3));
 
 //            re = new RetinaEvent(e);
             //re = new RetinaEvent(PhoneMetaData p, AppMetadata a);
-            re = new     RetinaEvent(pm, am,e) ;
+            re = new RetinaEvent(pm, am, e);
 
             re.timestamp = timestamp;
             re.eventid = geventid;
@@ -307,6 +310,10 @@ public class ParseBolt extends BaseRichBolt
             System.out.println("DONE WITH FORMING JSON INSIDE PARSE BOLOT ****************************************************");
             System.out.println(opstr);
         }
+        }   else {
+            opstr = null;
+        }
+
 
         return opstr;
     }

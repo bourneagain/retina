@@ -83,7 +83,7 @@ class MainTopology
 
             // submit the topology to the local cluster
             cluster.submitTopology("retina-storm", conf, builder.createTopology());
-            (new Thread(sd)).start();
+          //  (new Thread(sd)).start();
             // let the topology run for 300 seconds. note topologies never terminate!
             Utils.sleep(300000);
 

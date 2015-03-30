@@ -51,6 +51,12 @@ public class SimulatePhoneData implements Runnable {
     }
 
     public void run() {
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("Phone data simulator thread started!");
         PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
                 "lollypop5.0.1 nexus5 m897 LRX22C\nappid 1.0 appname\n");
