@@ -1,18 +1,16 @@
 <?php header('Access-Control-Allow-Origin: *'); ?>
+<html>
 <head>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/iThing.css" type="text/css" />
 </head>
 <style>
-body { 
-padding-top: 200px;
-padding-left: 70px;
- }
+    body { 
+    padding-top: 200px;
+    padding-left: 70px;
+    }
 </style>
-
-
 <body>
-
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
         <h1>RETINA </h1>
@@ -25,20 +23,20 @@ padding-left: 70px;
       <tr>
         <td>Query Type</td>
         <td>
-      		<div class="radiosButtons">
-      			<label>
-      			  <input type="radio" name='queryType' id="topn" value="topN">
-      			  TopN 
-      			</label>
-      			<label>
-      			  <input type="radio" name='queryType' id="timeseries" value="timeSeries">
-      		    TimeSeries
-      			</label>
+              <div class="radiosButtons">
+                  <label>
+                    <input type="radio" name='queryType' id="topn" value="topN">
+                    TopN 
+                  </label>
+                  <label>
+                    <input type="radio" name='queryType' id="timeseries" value="timeSeries">
+                  TimeSeries
+                  </label>
             <label>
               <input type="radio" name='queryType' id="timeboundary" value="timeBoundary">
               TimeBoundary
             </label>
-      		</div>
+              </div>
       </td>
       </tr>
       <tr>
@@ -63,56 +61,56 @@ padding-left: 70px;
           </div>
       </td>
       </tr>
-	  <tr>
-	   <td>
-		 Intervals		
-	   </td>
-	   <td>
-			<div id='slider'></slider>	
-	   </td>
-	  </tr>
+      <tr>
+       <td>
+         Intervals        
+       </td>
+       <td>
+            <div id='slider'></slider>    
+       </td>
+      </tr>
 
-	  <tr>
-	   <td>
-		Thresholds 
-	   </td>
-	   <td><div class='input-group'><input type="text" id='threshold' class="form-control" placeholder="Query Limit" aria-describedby="basic-addon1"></div>
-	   </td>
-	  </tr>
+      <tr>
+       <td>
+        Thresholds 
+       </td>
+       <td><div class='input-group'><input type="text" id='threshold' class="form-control" placeholder="Query Limit" aria-describedby="basic-addon1"></div>
+       </td>
+      </tr>
 
-	  <tr>
-	   <td>
-		Aggregation	FieldNames
-	   </td>
-	   <td>
+      <tr>
+       <td>
+        Aggregation    FieldNames
+       </td>
+       <td>
             <select id='aggField' class="aggDim">
              <option>count</option>
              <option>phoneimei</option>
              <option>appid</option>
-	   </td>
-	  </tr>
+       </td>
+      </tr>
        <tr>
           <td>Filter Dimensions</td>
           <td>
-			<div class='filterDim'>
-				<div id='clonefilter1'>
-					<select id='filField1'>
-					 <option>country </option>
-					 <option>phoneimei </option>
-					 <option>appid </option>
-					</select>
-					 <div class='input-group'>
-						<input type="text" id='filFieldInput1' aria-describedby="basic-addon1">
-					</div>
-				</div>
-			</div>
-		 	<input type="button" id="btnAdd" value="add another filter dimension" />
+            <div class='filterDim'>
+                <div id='clonefilter1'>
+                    <select id='filField1'>
+                     <option>country </option>
+                     <option>phoneimei </option>
+                     <option>appid </option>
+                    </select>
+                     <div class='input-group'>
+                        <input type="text" id='filFieldInput1' aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+             <input type="button" id="btnAdd" value="add another filter dimension" />
           </td>
       </tr>
       </table>
   </div>
   <div class="col-md-8">
-		Result : <input id='results' size='50'></input>
+        Result : <input id='results' size='50'></input>
 
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
@@ -135,7 +133,7 @@ padding-left: 70px;
  </tbody>
     </table>
 
-	</div>
+    </div>
 </div>
 
 <br>
@@ -180,18 +178,17 @@ Sample Input :
 
 <script>
 $(document).ready(function() {
-
- $('#btnAdd').hide()
-// comment to have additional filter addition
+    $('#btnAdd').hide();
+    // comment to have additional filter addition
      $('#btnAdd').click(function() {
-		var num = $('.filterDim').length;
-		var newNum  = new Number(num + 1)
-		var newEl = $('#clonefilter'+num).clone().attr('id','clonefilter'+newNum);
-		newEl.find('#filField'+num).attr('id','filField'+newNum)
-		newEl.find('.input-group').find('#filFieldInput'+num).attr('id','filFieldInput'+newNum)
-		$('.filterDim').append(newEl);
-		//$('.filterDim').after(newEl);
-});
+            var num = $('.filterDim').length;
+            var newNum  = new Number(num + 1)
+            var newEl = $('#clonefilter'+num).clone().attr('id','clonefilter'+newNum);
+            newEl.find('#filField'+num).attr('id','filField'+newNum)
+            newEl.find('.input-group').find('#filFieldInput'+num).attr('id','filFieldInput'+newNum)
+            $('.filterDim').append(newEl);
+            //$('.filterDim').after(newEl);
+    });
 });
 //
 //var bounds = $("#slider").dateRangeSlider("option", "bounds");
@@ -205,8 +202,8 @@ var min = new Date(2010, 0, 1),
       defaultValues: {
         min: new Date(2012, 0, 1),
         max: max 
-      }
-    });
+    }
+});
 
 
 function formQuery(queryString){
@@ -221,124 +218,104 @@ $("#slider").bind("valuesChanged", function(e, data){
 
 
 $('#query').click(function(){
-		
+        var table = $('#example').DataTable();    
+         table.destroy();
         var json = $("#input").val();   
         var topic = "wikipedia";
         var radios = $(":radio:checked");
         //var checkboxes = $(":checkboxes:checked");
-        queryMap = {}
+        queryMap = {};
         queryMap["dataSource"] = topic;
         for (i = 0; i < radios.length; i++) { 
-			       queryMap[radios[i].name] = radios[i].value  
+                   queryMap[radios[i].name] = radios[i].value  ;
         }
-		var sliderDates = $("#slider").dateRangeSlider("values");
-		var maxd = sliderDates.max;
-		var mind = sliderDates.min;
-		var maxd_year = maxd.getFullYear();
-		var maxd_month = maxd.getMonth()+1;
-		var maxd_date = maxd.getDate();
-		var maxd_str = maxd_year+'-'+maxd_month+'-'+maxd_date;
-		var mind_year = mind.getFullYear();
-		var mind_month = mind.getMonth()+1;
-		var mind_date = mind.getDate();
-		var mind_str = mind_year+'-'+mind_month+'-'+mind_date;
+        var sliderDates = $("#slider").dateRangeSlider("values");
+        var maxd = sliderDates.max;
+        var mind = sliderDates.min;
+        var maxd_year = maxd.getFullYear();
+        var maxd_month = maxd.getMonth()+1;
+        var maxd_date = (maxd.getDate()+1)%31;
+        var maxd_str = maxd_year+'-'+maxd_month+'-'+maxd_date;
+        var mind_year = mind.getFullYear();
+        var mind_month = mind.getMonth()+1;
+        var mind_date = mind.getDate();
+        var mind_str = mind_year+'-'+mind_month+'-'+mind_date;
 
 
 //"intervals": [ "2000-01-01/2020-01-01" ], 
-		intervals = mind_str+'/'+maxd_str;
-//	$("#slider").bind("valuesChanged", function(e, data){
-//  	console.log("Values just changed. min: " + data.values.min + " max: " + data.values.max);
-//	});
+        intervals = mind_str+'/'+maxd_str;
+//    $("#slider").bind("valuesChanged", function(e, data){
+//      console.log("Values just changed. min: " + data.values.min + " max: " + data.values.max);
+//    });
 
         //console.log("json is" + json);
-		queryMap["intervals"] = [];
-		queryMap["intervals"].push(intervals);
+        queryMap["intervals"] = [];
+        queryMap["intervals"].push(intervals);
         var threshold = $("#threshold").val();   
-		queryMap["threshold"] = threshold;
+        // debug
+        //queryMap["threshold"] = threshold;
+        queryMap["threshold"] = "10";
 
-		var aggregations = $( "#aggField option:selected" ).text();
-		aggregations = aggregations.trim();	
-		queryMap["aggregations"]=[]
-		var temp={};
-		temp["type"]="longSum";
-		temp["fieldName"]=aggregations;
-		temp["name"]="edit_count";
-		queryMap["aggregations"].push(temp);
-		queryMap["dimension"]="page";
-		queryMap["metric"]="edit_count";
+        var aggregations = $( "#aggField option:selected" ).text();
+        aggregations = aggregations.trim();    
+        queryMap["aggregations"]=[];
+        var temp={};
+        temp["type"]="longSum";
+        temp["fieldName"]=aggregations;
+        temp["name"]="edit_count";
+        queryMap["aggregations"].push(temp);
+        queryMap["dimension"]="page";
+        queryMap["metric"]="edit_count";
 
 
-		var filterSelected = $( "#filField1 option:selected" ).text();
-		var filterSelectedValue = $( "#filFieldInput1").val();
-		filterSelected = filterSelected.trim();
-		filterSelectedValue = filterSelectedValue.trim();
-		queryMap["filter"]={};
-		queryMap["filter"]["type"]="selector";
-		queryMap["filter"]["dimension"]=filterSelected;
-		queryMap["filter"]["value"]=filterSelectedValue;
+        var filterSelected = $( "#filField1 option:selected" ).text();
+    //    var filterSelectedValue = $( "#filFieldInput1").val();
+// debug
+        var filterSelectedValue = "United States"; 
+        filterSelected = filterSelected.trim();
+        filterSelectedValue = filterSelectedValue.trim();
+        queryMap["filter"]={};
+        queryMap["filter"]["type"]="selector";
+        queryMap["filter"]["dimension"]=filterSelected;
+        queryMap["filter"]["value"]=filterSelectedValue;
 
         console.log(queryMap);
-		$.ajax({ 
-				type : "post",
-				//url: "http://146.148.85.88:8082/druid/v2/",
-				url: "b.php",
-				data: {
-				//      "queryType":"timeBoundary",
-				//      "dataSource":"wikipedia"
-				"json" : JSON.stringify(queryMap)
-				},
-				//dataType : 'json',
-				success : function(data){
-						var json = {
-						BrowserStats : [
-						{ engine: "Trident", browser: "IE 4.0", platform: "Win95", version: 4 },
-						{ engine: "Trident", browser: "IE 5.0", platform: "Win95", version: 5 },
-						{ engine: "Trident", browser: "IE 5.5", platform: "Win95", version: 5.5 }
-						]
-						};
-var data2=[];
-for(i=0;i<json.BrowserStats.length;i++){
-var temp = [];
-temp.push(json.BrowserStats[i].engine);
-temp.push(json.BrowserStats[i].browser);temp.push(json.BrowserStats[i].platform);temp.push(json.BrowserStats[i].version);
-data2.push(temp);
-}
-
-console.log(data2);
-						$('#example').dataTable( {
-								"aaData": data2,
-								"aoColumns": [
-								{ "sTitle": "Engine" },
-								{ "sTitle": "Browser" },
-								{ "sTitle": "Platform" },
-								{ "sTitle": "Version"}
-								]
-								}); // datatables end
-
-				}	
-		//      console.log(data);
-		}); // ajax end
+        $.ajax({ 
+                type : "post",
+                //url: "http://146.148.85.88:8082/druid/v2/",
+                url: "b.php",
+                data: {
+                //      "queryType":"timeBoundary",
+                //      "dataSource":"wikipedia"
+                "json" : JSON.stringify(queryMap)
+                },
+                //dataType : 'json',
+                success : function(data){
+                    data = data.slice(1, - 1);
+                    console.log("stringdata "+data);
+                    ajaxJson = JSON.parse(data);    
+                   	console.log("TYPE OF OBJECT success"+ajaxJson+"printed json");
+                    console.log("ajaxJsonResult" + ajaxJson.result.length);
+                    var datatablesData =  ajaxJson.result;
+                    var data2=[];
+                    for (i=0; i< datatablesData.length ;i++) {
+                        var temp = [];
+                        temp.push(datatablesData[i].edit_count);
+                        temp.push(datatablesData[i].page);
+                        data2.push(temp);
+                    }
+                    console.log(data2);
+                    $('#example').dataTable({
+                        "aaData": data2,
+                        "aoColumns": [
+                            { "sTitle": "edit_count" },
+                            { "sTitle": "page" }
+                        ]
+                    }); // datatables end
+                } // success end    
+          }); // ajax end
 }); 
 // end of click function
-
 </script>
-
 </body>
-
-
-<!--
-{
-  "queryType": "topN",
-  "dataSource": "wikipedia", 
-  "granularity": "all", 
-  "dimension": "page",
-  "metric": "edit_count",
-  "threshold" : 10,
-  "aggregations": [
-    {"type": "longSum", "fieldName": "count", "name": "edit_count"}
-  ], 
-  "filter": { "type": "selector", "dimension": "country", "value": "United States" }, 
-  "intervals": ["2012-10-01T00:00/2020-01-01T00"]
-}
--->
-
+</html>
