@@ -308,9 +308,9 @@ public class ParseBolt extends BaseRichBolt
             opstr = re.toJSON();
             System.out.println("DONE WITH FORMING JSON INSIDE PARSE BOLOT ****************************************************");
             System.out.println(opstr);
-        }
         }   else {
             opstr = null;
+        }
         }
 
 
