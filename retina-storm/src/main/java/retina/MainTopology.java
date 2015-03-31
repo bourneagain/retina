@@ -36,7 +36,7 @@ class MainTopology
         boolean kafkaSpout  = true;
 
         String sourceSpout = "event-spout";
-        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 1000);
+        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000);
 
         // attach the tweet spout to the topology - parallelism of 1
         if (kafkaSpout) {
@@ -83,7 +83,7 @@ class MainTopology
 
             // submit the topology to the local cluster
             cluster.submitTopology("retina-storm", conf, builder.createTopology());
-          //  (new Thread(sd)).start();
+            (new Thread(sd)).start();
             // let the topology run for 300 seconds. note topologies never terminate!
             Utils.sleep(300000);
 

@@ -53,7 +53,7 @@ public class ParseBolt extends BaseRichBolt
         String rawlog = tuple.getString(0);
         System.out.println("parser bolt: "+ rawlog);
         String json = ParseString(rawlog);
-        if (json.equals("[{}]") ) {
+        if (json == null || json.equals("[{}]") ) {
             System.out.printf(" NULL JSON OUT OF ORDER MESSAGE READ");
         } else {
             System.out.println("Emitting ParseBolt:" + json);
@@ -169,7 +169,7 @@ public class ParseBolt extends BaseRichBolt
             tempPhoneData.add(phonemeta[2]);
             tempPhoneData.add(phonemeta[3]);
             phoneDetailsMap.put(pd.phoneimei, tempPhoneData);
-            tempPhoneData = null; // for gc
+            //tempPhoneData = null; // for gc
 
             AppMetadata amdata = new AppMetadata(appmeta[0], appmeta[1], appmeta[2]);
             re = new RetinaEvent(pmdata, amdata, e);
@@ -180,7 +180,7 @@ public class ParseBolt extends BaseRichBolt
             tempAppData.add(appmeta[1]);
             tempAppData.add(appmeta[2]);
             appDetailsMap.put(appmeta[0], tempAppData);
-            tempAppData = null;
+            //tempAppData = null;
 
             AppMetadata am = new AppMetadata(pd.appid, tempAppData.get(0), tempAppData.get(1));
             PhoneMetaData pm = new PhoneMetaData(pd.phoneimei, tempPhoneData.get(0), tempPhoneData.get(1), tempPhoneData.get(2), tempPhoneData.get(3));
@@ -192,7 +192,6 @@ public class ParseBolt extends BaseRichBolt
 
             re = new RetinaEvent(pm, am, e);
 
-//            re = new RetinaEvent(p,a, e);
             re.timestamp = timestamp;
             re.eventid = geventid;
             opstr = re.toJSON();
