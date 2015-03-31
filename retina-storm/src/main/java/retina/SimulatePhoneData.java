@@ -59,7 +59,7 @@ public class SimulatePhoneData implements Runnable {
         }
         System.out.println("Phone data simulator thread started!");
         PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
-                "lollypop5.0.1 nexus5 m897 LRX22C\nappid 1.0 appname\n");
+                "lollypop5.0.1 nexus5 m897 LRX22C\napp1 1.0 appname\n");
 
         //if event type is metadata: there will be two lines in the log field, phone metadata and app metadata
 //        phonemetadata - <phoneversion> <phonemodel> <phonebaseband> <phonebuild>
