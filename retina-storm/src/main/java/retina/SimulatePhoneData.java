@@ -123,7 +123,7 @@ public class SimulatePhoneData implements Runnable {
                 }
             }
             KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, json);
-            System.out.println("Simulator dumping json:" + json);
+           // System.out.println("Simulator dumping json:" + json);
             producer.send(data);
             i++;
         }

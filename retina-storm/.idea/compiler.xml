@@ -29,7 +29,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="retina-storm" target="1.8" />
-      <module name="uiuc-storm" target="1.8" />
+      <module name="uiuc-storm" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

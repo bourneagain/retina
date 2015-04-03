@@ -64,7 +64,7 @@ public class KafkaBolt extends BaseRichBolt
 
     public void produceJSONtoKafkaQ(String json) {
         KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, json);
-        System.out.println("Dumping json to druid over kafka:" + json);
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n*****************  Dumping json to druid over kafka :" + topic +" : *****" + json);
         producer.send(data);
     }
 
@@ -78,5 +78,8 @@ public class KafkaBolt extends BaseRichBolt
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         // this bolt doesn't need to emit
+    }
+    public static void main(String[] args){
+
     }
 }

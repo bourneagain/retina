@@ -37,6 +37,7 @@ class MainTopology
 
         String sourceSpout = "event-spout";
         SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000);
+//        SimulatePhoneData sd = new SimulatePhoneData(20, 1000);
 
         // attach the tweet spout to the topology - parallelism of 1
         if (kafkaSpout) {
@@ -49,10 +50,13 @@ class MainTopology
             builder.setSpout(sourceSpout, new EventSpout(), 1);
         }
 
-        //builder.setSpout(sourceSpout, new EventSpout(), 1);
+
         builder.setBolt("timestamp-bolt", new TimestampBolt(), 1).shuffleGrouping(sourceSpout);
         builder.setBolt("parse-event-bolt", new ParseBolt(), 1).shuffleGrouping("timestamp-bolt");
+//        builder.setBolt("parse-event-bolt", new ParseBolt(), 1).shuffleGrouping(sourceSpout);
         builder.setBolt("kafka-producer-bolt", new KafkaBolt(), 1).shuffleGrouping("parse-event-bolt");
+//        builder.setBolt("kafka-producer-bolt", new KafkaBolt(), 1).shuffleGrouping(sourceSpout);
+
 
         // create the default config object
         Config conf = new Config();
@@ -76,7 +80,7 @@ class MainTopology
             // run it in a simulated local cluster
 
             // set the number of threads to run - similar to setting number of workers in live cluster
-            conf.setMaxTaskParallelism(3);
+            conf.setMaxTaskParallelism(1);
 
             // create the local cluster instance
             LocalCluster cluster = new LocalCluster();
@@ -85,7 +89,7 @@ class MainTopology
             cluster.submitTopology("retina-storm", conf, builder.createTopology());
             (new Thread(sd)).start();
             // let the topology run for 300 seconds. note topologies never terminate!
-            Utils.sleep(300000);
+            Utils.sleep(9999000);
 
             // now kill the topology
             cluster.killTopology("retina-storm");
