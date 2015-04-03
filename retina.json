@@ -1,0 +1,212 @@
+{
+   "queryType":"timeBoundary",
+   "dataSource":"wikipedia"
+}
+{
+  "queryType": "timeseries", 
+  "dataSource": "wikipedia", 
+  "intervals": [ "2000-01-01/2020-01-01" ], 
+  "granularity": "all", 
+  "aggregations": [
+     {"type": "doubleSum", "fieldName": "phoneimei", "name": "phone_imei"}
+  ]
+}
+{
+  "queryType": "topN",
+  "dataSource": "wikipedia", 
+  "granularity": "all", 
+  "dimension": "page",
+  "metric": "edit_count",
+  "threshold" : 10,
+  "aggregations": [
+    {"type": "longSum", "fieldName": "count", "name": "edit_count"}
+  ], 
+  "filter": { "type": "selector", "dimension": "country", "value": "United States" }, 
+  "intervals": ["2012-10-01T00:00/2020-01-01T00"]
+}
+
+{
+"dataSource":"wikipedia",
+"queryType":"topN",
+"granularity":"all",
+"intervals":["2015-2-25/2015-2-25"],
+"threshold":"10",
+"aggregations":[
+{"type":"longSum","fieldName":"count","name":"edit_count"}
+],
+"dimension":"page",
+"metric":"edit_count",
+"filter":{"type":"selector","dimension":"country ","value":"United States"}
+}
+
+curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'{"dataSource":"wikipedia","queryType":"topN","granularity":"all","intervals":["2010-02-25/2015-03-25"],"threshold":"10","aggregations":[{"type":"longSum","fieldName":"count","name":"edit_count"}],"dimension":"page","metric":"edit_count","filter":{"type":"selector","dimension":"country","value":"United States"}}'
+
+curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'{"dataSource":"wikipedia","queryType":"topN","granularity":"all","intervals":"[\"2015-2-25/2015-2-25\"]","threshold":"10","aggregations":[{"type":"longSum","fieldName":"count","name":"count"}],"dimension":"page","metric":"edit_count","filter":{"type":"selector","dimension":"country","value":"United States"}}'
+
+
+curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'{"dataSource":"wikipedia","queryType":"topN","granularity":"all","intervals":["2015-2-25/2015-2-25"],"threshold":"10","aggregations":[{"type":"longSum","fieldName":"count","name":"count"}],"dimension":"page","metric":"edit_count","filter":{"type":"selector","dimension":"country","value":"United States"}}'
+
+curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'{"dataSource":"wikipedia","queryType":"topN","granularity":"all","intervals":["2015-2-25/2010-0-1"],"threshold":"10","aggregations":[{"type":"longSum","fieldName":"count","name":"edit_count"}],"dimension":"page","metric":"edit_count","filter":{"type":"selector","dimension":"country","value":"United States"}}'
+
+{
+  "queryType": "search",
+  "dataSource": "wikipedia",
+  "granularity": "day",
+  "searchDimensions": [
+        "phone_imei"
+  ],
+  "query": {
+    "type": "fragment",
+    "value": [1]
+  },
+  "sort" : {
+    "type": "lexicographic"
+  },
+  "intervals": [
+    "2010-01-01T00:00:00.000/2015-01-03T00:00:00.000"
+  ]
+}
+{
+    "queryType": "groupBy",
+    "dataSource": "wikipedia",
+    "granularity": "day",
+    "dimensions": [
+        "added"
+    ],
+    "aggregations": [
+        {
+            "type": "longSum",
+            "name": "sample_name1",
+            "fieldName": "added"
+        }
+    ],
+    "intervals": [
+        "2012-01-01T00:00:00.000/2015-01-03T00:00:00.000"
+    ],
+    "having": {
+        "type": "greaterThan",
+        "aggregation": "sample_name1",
+        "value": 0
+    }
+}
+{
+  "queryType": "timeseries",
+  "dataSource": "wikipedia",
+  "granularity": "all",
+  "filter": { "type": "selector", "dimension": "language", "value": "ja" },
+  "aggregations": [
+    { "type": "longSum", "name": "phoneimei", "fieldName": "phoneimei" }
+  ],    
+  "intervals": [ "2010-01-01T00:00:00.000/2020-01-0
+}
+
+
+
+ curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'{"dataSource":"wikipedia","queryType":"topN","granularity":"all","intervals":["2010-1-1/2015-3-25"],"threshold":"10","aggregations":[{"type":"longSum","fieldName":"count","name":"edit_count"}],"dimension":"page","metric":"edit_count","filter":{"type":"selector","dimension":"country","value":"United States"}}'
+
+
+[ {
+  "timestamp" : "2015-03-23T03:17:17.523Z",
+  "result" : [ {
+    "edit_count" : 19,
+    "page" : "List_of_United_States_Congress_members_who_died_in_office"
+  }, {
+    "edit_count" : 8,
+    "page" : "2014–15_Phoenix_Suns_season"
+  }, {
+    "edit_count" : 8,
+    "page" : "Lightner_Museum"
+  }, {
+    "edit_count" : 6,
+    "page" : "Republican_Party_presidential_candidates,_2016"
+  }, {
+    "edit_count" : 6,
+    "page" : "To_Pimp_a_Butterfly"
+  }, {
+    "edit_count" : 5,
+    "page" : "Dennis_Johnson"
+  }, {
+    "edit_count" : 4,
+    "page" : "Beaverton_School_District"
+  }, {
+    "edit_count" : 4,
+    "page" : "Oliver_Farnworth"
+  }, {
+    "edit_count" : 4,
+    "page" : "Tesla_Model_S"
+  }, {
+    "edit_count" : 4,
+    "page" : "University_of_Rochester"
+  } ]
+
+
+var json = {
+  BrowserStats : [
+    { engine: "Trident", browser: "IE 4.0", platform: "Win95", version: 4 },
+    { engine: "Trident", browser: "IE 5.0", platform: "Win95", version: 5 },
+    { engine: "Trident", browser: "IE 5.5", platform: "Win95", version: 5.5 }
+  ]
+};
+w
+
+"phonetimestamp":"2015-03-27T13:37:04Z",
+"eventid":"1",
+"eventtype":"L",
+"phoneimei":"1234",
+"appid":"app1",
+"logs":"Error:error print\nWarn: warn print\n
+Click:component1\n
+Click:component1\n
+Error:error print\n
+Click:component2\n"
+}
+
+
+{"phonetimestamp":"2015-03-27T14:07:09Z","eventid":"1","eventtype":"L","phoneimei":"1234","appid":"app1",
+"logs":
+  "Error:error print\n
+Warn: warn print\n
+Click:component1\n
+Click:component1\n
+Error:error print\n
+Click:component2\n"
+}
+
+"1", "L", "1234", "app1",
+                "Error:error print\nWarn: warn print\nClick:component1\n"
+                        + "Crash:syslog1\nCrash:syslog2\nCrash:syslog1\nClick:component1\nError:error print\n"
+                        + "Click:component2\n");
+
+
+
+{"timestamp":"2015-10-27T23:11:02Z","eventid":"160","phoneimei":1234,"appid":"app1","phoneversion":"","phonemodel":"","phonebaseband":"","phonebuild":"","appversion":"1.0","appname":"","eventtype":"L","eventwarn":"Warn: warn print","eventerror":"Error:error print\nError:error print1\nError:error print2\nError:error print3","eventcrash":"Crash:crash1\nCrash:crash2\nCrash:crash3","eventclick":"component2:1 component1:1 ","crashcount":1,"errorcount":4,"warncount":}
+
+{"timestamp":"2015-10-27T23:11:03Z","eventid":"160","phoneimei":1234,"appid":"app1","phoneversion":"","phonemodel":"","phonebaseband":"","phonebuild":"","appversion":"1.0","appname":"","eventtype":"L","eventwarn":"Warn: warn print","eventerror":"Error:error print\nError:error print1\nError:error print2\nError:error print3","eventcrash":"Crash:crash1\nCrash:crash2\nCrash:crash3","eventclick":"component2:1 component1:1 ","crashcount":1,"errorcount":4,"warncount":}
+
+{"timestamp":"2015-10-27T23:11:04Z","eventid":"160","phoneimei":1234,"appid":"app1","phoneversion":"","phonemodel":"","phonebaseband":"","phonebuild":"","appversion":"1.2","appname":"","eventtype":"L","eventwarn":"Warn: warn print","eventerror":"Error:error print\nError:error print1\nError:error print2\nError:error print3","eventcrash":"Crash:crash1\nCrash:crash2\nCrash:crash3","eventclick":"component2:1 component1:1 ","crashcount":1,"errorcount":4,"warncount":}
+
+{"timestamp":"2015-10-27T23:11:05Z","eventid":"160","phoneimei":1234,"appid":"app1","phoneversion":"","phonemodel":"","phonebaseband":"","phonebuild":"","appversion":"","appname":"","eventtype":"L","eventwarn":"Warn: warn print","eventerror":"Error:error print\nError:error print1\nError:error print2\nError:error print3","eventcrash":"Crash:crash1\nCrash:crash2\nCrash:crash3","eventclick":"component2:1 component1:1 ","crashcount":1,"errorcount":4,"warncount":}
+
+
+{"timestamp":"2015-10-27T23:11:06Z","eventid":"160","phoneimei":1234,"appid":"app2","phoneversion":"","phonemodel":"","phonebaseband":"","phonebuild":"","appversion":"","appname":"","eventtype":"L","eventwarn":"Warn: warn print","eventerror":"Error:error print\nError:error print1\nError:error print2\nError:error print3","eventcrash":"Crash:crash1\nCrash:crash2\nCrash:crash3","eventclick":"component2:1 component1:1 ","crashcount":1,"errorcount":4,"warncount":}
+
+
+
+'{ "queryType": "topN", "dataSource": "wikipedia", "granularity": "all", "dimension": "page", "metric": "edit_count", "threshold" : 10, "aggregations": [ {"type": "longSum", "fieldName": "count", "name": "edit_count"} ], "filter": { "type": "selector", "dimension": "country", "value": "United States" }, "intervals": ["2012-10-01T00:00/2020-01-01T00"] }
+
+'{"dataSource":"wikipedia","queryType":"topN","granularity":"all","intervals":["2012-1-1/2015-3-28"],"threshold":"10","aggregations":[{"type":"longSum","fieldName":"count","name":"edit_count"}],"dimension":"page","metric":"edit_count","filter":{"type":"selector","dimension":"country","value":"United States"}}'
+
+
+{"phonetimestamp":"2015-03-30T19:52:36Z","eventid":"1","eventtype":"L","phoneimei":"1234","appid":"app1","logs":"Error:error print\nWarn: warn print\nClick:component1\nCrash:crash1\nError:error print1\nCrash:crash2\nError:error print2\nCrash:crash3\nError:error print3\nClick:component2\n"}
+
+
+
+{"phonetimestamp":"2015-03-30T23:21:03Z","eventid":"1","eventtype":"M","phoneimei":"1234","appid":"app1","logs":"lollypop5.0.1 nexus5 m897 LRX22C\napp1 1.0 appname\n"}
+{"phonetimestamp":"2015-03-30T23:22:03Z","eventid":"1","eventtype":"L","phoneimei":"1234","appid":"app1","logs":"Error:error print\nWarn: warn print\nClick:component1\nCrash:crash1\nError:error print1\nCrash:crash2\nError:error print2\nCrash:crash3\nError:error print3\nClick:component2\n"}
+{"phonetimestamp":"2015-03-30T21:07:03Z","eventid":"3","eventtype":"L","phoneimei":"2222","appid":"app3","logs":"Error:error print\nWarn: warn print\nClick:component1\nCrash:crash11\nError:error print1\nCrash:crash22\nError:error print2\nCrash:crash33\nError:error print3\nClick:component22\n"}
+
+{"phonetimestamp":"2015-03-30T23:15:15Z","eventid":"1","eventtype":"M","phoneimei":"1234","appid":"app1","logs":"lollypop5.0.1 nexus5 m897 LRX22C\nappid 1.0 appname\n"}
+
+
+
+a87c0b5938b0304ba27ec9d033a4962229efa07d
