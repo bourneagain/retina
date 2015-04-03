@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/retina-storm.iml" filepath="$PROJECT_DIR$/retina-storm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/uiuc-storm.iml" filepath="$PROJECT_DIR$/uiuc-storm.iml" />
     </modules>
   </component>
 </project>
