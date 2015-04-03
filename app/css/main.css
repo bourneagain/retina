@@ -1,0 +1,10 @@
+body { 
+ padding-top: 100px;
+ padding-left: 70px;
+ }
+#leftPane {
+  background-color : aliceblue;	
+}
+#rightPane{
+  background-color : aliceblue;	
+}
