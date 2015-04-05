@@ -2,9 +2,18 @@ body {
  padding-top: 100px;
  padding-left: 70px;
  }
-#leftPane {
-  background-color : aliceblue;	
-}
 #rightPane{
   background-color : aliceblue;	
+  border: 2px solid #a1a1a1;
+  border-radius: 25px;
+  height: 100%;
+  position: relative;
 }
+#leftPane {
+  background-color : rgb(234, 234, 234);	
+  border: 2px solid #a1a1a1;
+  border-radius: 25px;
+  height: 100%;
+  position: relative;
+}
+

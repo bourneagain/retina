@@ -6,18 +6,9 @@
 <link rel="stylesheet" href="css/main.css" type="text/css" />
 <link rel="stylesheet" href="css/layouts/blog.css">
 <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- for maintaining width as per device width -->
-<style>
-tr.spaceUnder > td
-{
-  padding-bottom: 1em;
-}
-</style>
 </head>
 <title>RETINAA : Real Time App Analytics</title>
 <body>
-
-
-<div class="text-center">
 <nav class="navbar navbar-default navbar-fixed-top">
 
   <!--<div class="col-md-12" id='logo'><img src='img/logo.png'></img></div>-->
@@ -25,142 +16,135 @@ tr.spaceUnder > td
         <h1>RETINAA: A Real Time App Analytics Framework </h1>
   </div>
 </nav>
-</div>
 
-        <div class="col-md-4" id='leftPane'>
-		<h1>Filter Metrics</h1>
-            <table style="width:100%">
-              <tr class='leftPaneTableTr'>
-                <td>Query Type</td>
-                <td>
-                      <div class="radiosButtons">
-                          <label>
-                            <input type="radio" name='queryType' id="topn" value="topN">
-                            TopN 
-                          </label>
-                          <label>
-                            <input type="radio" name='queryType' id="timeseries" value="timeSeries">
-                          TimeSeries
-                          </label>
-                    <label>
-                      <input type="radio" name='queryType' id="timeboundary" value="timeBoundary">
-                      TimeBoundary
-                    </label>
-                      </div>
-              </td>
-              </tr>
-              <tr class='leftPaneTableTr'>
-              <td>Granularity</td>
-              <td>
-                <!-- 
-                all, none, minute, fifteen_minute, thirty_minute, hour and day
-              -->
-                <div class="radiosButtons">
-                    <label>
-                      <input type="radio" name='granularity' id="gall" value="all">
-                      All 
-                    </label>
-                    <label>
-                      <input type="radio" name='granularity' id="gminute" value="minute">
-                      Minute
-                    </label>
-                    <label>
-                      <input type="radio" name='granularity' id="ghour" value="hour">
-                      Hour
-                    </label>
-                  </div>
-              </td>
-              </tr>
-              <tr class='leftPaneTableTr'>
-               <td>
-                 Intervals        
-               </td>
-               <td>
-                    <div id='slider'></slider>    
-               </td>
-              </tr>
+<div class="row">
+  <div class="col-md-4" id='leftPane'>
+    <table style="width:100%">
+      <tr id='leftPaneTableTd'>
+        <td>Query Type</td>
+        <td>
+              <div class="radiosButtons">
+                  <label>
+                    <input type="radio" name='queryType' id="topn" value="topN">
+                    TopN 
+                  </label>
+                  <label>
+                    <input type="radio" name='queryType' id="timeseries" value="timeSeries">
+                  TimeSeries
+                  </label>
+            <label>
+              <input type="radio" name='queryType' id="timeboundary" value="timeBoundary">
+              TimeBoundary
+            </label>
+              </div>
+      </td>
+      </tr>
+      <tr id='leftPaneTableTd'>
+      <td>Granularity</td>
+      <td>
+        <!-- 
+        all, none, minute, fifteen_minute, thirty_minute, hour and day
+      -->
+        <div class="radiosButtons">
+            <label>
+              <input type="radio" name='granularity' id="gall" value="all">
+              All 
+            </label>
+            <label>
+              <input type="radio" name='granularity' id="gminute" value="minute">
+              Minute
+            </label>
+            <label>
+              <input type="radio" name='granularity' id="ghour" value="hour">
+              Hour
+            </label>
+          </div>
+      </td>
+      </tr>
+      <tr id='leftPaneTableTd'>
+       <td>
+         Intervals        
+       </td>
+       <td>
+            <div id='slider'></slider>    
+       </td>
+      </tr>
 
-              <tr class='leftPaneTableTr'>
-               <td>
-                Thresholds 
-               </td>
-               <td><div class='input-group'><input type="text" id='threshold' class="form-control" placeholder="Query Limit" aria-describedby="basic-addon1"></div>
-               </td>
-              </tr>
+      <tr id='leftPaneTableTd'>
+       <td>
+        Thresholds 
+       </td>
+       <td><div class='input-group'><input type="text" id='threshold' class="form-control" placeholder="Query Limit" aria-describedby="basic-addon1"></div>
+       </td>
+      </tr>
 
-              <tr class='leftPaneTableTr'>
-               <td>
-                Aggregation    FieldNames
-               </td>
-               <td>
-                    <select id='aggField' class="aggDim">
-                     <option>errorcount</option>
-                     <option>phoneimei</option>
-                     <option>appid</option>
-               </td>
-              </tr>
-               <tr class='leftPaneTableTr'>
-                  <td>Filter Dimensions</td>
-                  <td>
-                    <div class='filterDim'>
-                        <div id='clonefilter1'>
-                            <select id='filField1'>
-                             <option>eventtype</option>
-                             <option>phoneimei </option>
-                             <option>appid </option>
-                            </select>
-                             <div class='input-group'>
-                                <input type="text" id='filFieldInput1' aria-describedby="basic-addon1">
-                            </div>
-                        </div>
+      <tr id='leftPaneTableTd'>
+       <td>
+        Aggregation    FieldNames
+       </td>
+       <td>
+            <select id='aggField' class="aggDim">
+             <option>errorcount</option>
+             <option>phoneimei</option>
+             <option>appid</option>
+       </td>
+      </tr>
+       <tr id='leftPaneTableTd'>
+          <td>Filter Dimensions</td>
+          <td>
+            <div class='filterDim'>
+                <div id='clonefilter1'>
+                    <select id='filField1'>
+                     <option>eventtype</option>
+                     <option>phoneimei </option>
+                     <option>appid </option>
+                    </select>
+                     <div class='input-group'>
+                        <input type="text" id='filFieldInput1' aria-describedby="basic-addon1">
                     </div>
-                     <input type="button" id="btnAdd" value="add another filter dimension" />
-                  </td>
-              </tr>
-              </table>
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" id='query'  class="btn btn-default">query</buttonk>
-              <button type="button" id='viewlive'  class="btn btn-default">viewLiveData</button>
+                </div>
             </div>
-
-		</div>
-
-	</div> <!-- end of leftPane -->
-
-    <div class="col-md-8" id='rightPane'>
-		<h1><View Data</h1>
+             <input type="button" id="btnAdd" value="add another filter dimension" />
+          </td>
+      </tr>
+      </table>
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" id='query'  class="btn btn-default">query</buttonk>
+      <button type="button" id='viewlive'  class="btn btn-default">viewLiveData</button>
+    </div>
+  </div> <!-- end of left pane -->
+  <div class="col-md-8" id='rightPane'>
 		<div id='container'></div>
-        <table id="example" class="display" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>app</th>
-                        <th>errorcount</th>
-                    </tr>
-                </thead>
-       			 <tfoot>
-                    <tr>
-                        <th>app</th>
-                        <th>errorcount</th>
-                    </tr>
-                </tfoot>
-         		<tbody>
-         		</tbody>
-        </table>
+        <!-- Result : <input id='results' size='50'></input> -->
+    
 
-	</div> <!-- end of right -->
+<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>app</th>
+                <th>errorcount</th>
+            </tr>
+        </thead>
+<tfoot>
+            <tr>
+                <th>app</th>
+                <th>errorcount</th>
+            </tr>
+        </tfoot>
+<tbody>
+ </tbody>
+    </table>
+
+    </div>
 </div>
-<footer>
-<?php include_once('footer.php'); ?>
-</footer>
-
 
 <br>
 <br>
-<!--
+
 Sample Input : 
 <input id='input' size='100'></input>
 <br>
--->
+</div>
  
 
 <!-- 
