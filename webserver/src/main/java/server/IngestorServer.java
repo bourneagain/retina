@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-public class NanoHTTPD {
+public class IngestorServer {
 
     public static final String HTTP_OK = "200 OK", HTTP_REDIRECT = "301 Moved Permanently",
             HTTP_FORBIDDEN = "403 Forbidden", HTTP_NOTFOUND = "404 Not Found",
@@ -41,7 +41,7 @@ public class NanoHTTPD {
     public static final String MIME_PLAINTEXT = "text/plain", MIME_HTML = "text/html",
             MIME_DEFAULT_BINARY = "application/octet-stream";
 
-    public NanoHTTPD(int port) throws IOException {
+    public IngestorServer(int port) throws IOException {
         myTcpPort = port;
         System.out.println("RETINA INJESTER STARTED .... ... .. ");
         final ServerSocket ss = new ServerSocket(myTcpPort);
@@ -88,9 +88,9 @@ public class NanoHTTPD {
     public static void main(String[] args) {
 
         int port = 1234;
-        NanoHTTPD nh = null;
+        IngestorServer ris = null;
         try {
-            nh = new NanoHTTPD(port);
+            ris = new IngestorServer(port);
         } catch (IOException ioe) {
             System.err.println("Couldn't start server:\n" + ioe);
             System.exit(-1);
@@ -168,7 +168,7 @@ public class NanoHTTPD {
                     char buf[] = new char[512];
                     int read = in.read(buf);
                     while (read >= 0 && size > 0 && !postLine.endsWith("\r\n")) {
-                        System.out.println("READ"+buf);
+//                        System.out.println("READ"+buf);
                         size -= read;
                         postLine += String.valueOf(buf, 0, read);
                         if (size > 0)
