@@ -1,3 +1,5 @@
+#BOOSTSTRAP CODE FOR DEMO
+#CHANGE PATH 
 echo "START ZOOKEEPER"
 ~/zookeeper-3.4.6/bin/zkServer.sh start &> /dev/null 
 echo "START kafka"
