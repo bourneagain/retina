@@ -5,12 +5,18 @@ echo "START ZOOKEEPER"
 echo "START kafka"
 ~/kafka_2.8.0-0.8.1.1/bin/kafka-server-start.sh ~/kafka_2.8.0-0.8.1.1/config/server.properties &> /tmp/kafkaServer.log &
 sleep 2
+# DELETE TOPIC FIRST JUST TO BE SURE
+~/kafka_2.8.0-0.8.1.1/bin/kafka-run-class.sh kafka.admin.DeleteTopicCommand --zookeeper localhost:2181 --topic test 
+~/kafka_2.8.0-0.8.1.1/bin/kafka-run-class.sh kafka.admin.DeleteTopicCommand --zookeeper localhost:2181 --topic phone-data-test
+echo "TOPICS DELETED"
+
 echo "create 'test' topic in kafka"
 ~/kafka_2.8.0-0.8.1.1/bin/kafka-topics.sh --create --zookeeper localhost:2181   --replication-factor 1 --partitions 1 --topic test  
 echo ""
 echo "create 'phone-data-test' topic in kafka"
 ~/kafka_2.8.0-0.8.1.1/bin/kafka-topics.sh --create --zookeeper localhost:2181   --replication-factor 1 --partitions 1 --topic phone-data-test
 sleep 1
+exit
 echo ""
 echo ""
 echo "START REALTIME"

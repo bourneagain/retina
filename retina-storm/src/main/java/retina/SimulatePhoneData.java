@@ -1,17 +1,21 @@
 package retina;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
 
 /**
  * Created by saikat on 3/25/15.
@@ -21,27 +25,35 @@ public class SimulatePhoneData implements Runnable {
     int timeinteval;
     GsonBuilder builder;
     Gson gson;
-    Properties props;
-    Producer<String, String> producer;
-    ProducerConfig config;
-    String topic = "phone-data-test";
-    String key = "mykey";
-    String zk = "zk.connect";
-    String dest = "127.0.0.1:2181";
+    String postUrl="http://localhost:1234";// put in your url
+    HttpPost post = new HttpPost(postUrl);
+    StringEntity  postingString ;//new StringEntity();//convert your pojo to   json
+    CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-    SimulatePhoneData(int count, int timeinterval) {
+
+//    Properties props;
+//    Producer<String, String> producer;
+//    ProducerConfig config;
+//    String topic = "phone-data-test";
+//    String key = "mykey";
+//    String zk = "zk.connect";
+//    String dest = "127.0.0.1:2181";
+
+    SimulatePhoneData(int count, int timeinterval) throws IOException {
         this.counter = count;
         this.timeinteval = timeinterval;
         builder = new GsonBuilder();
 
         gson = builder.create();
-        props = new Properties();
-        props.put(zk, dest);
-        props.put("metadata.broker.list", "localhost:9092");
-        props.put("serializer.class", "kafka.serializer.StringEncoder");
-        props.put("request.required.acks", "1");
-        config = new ProducerConfig(props);
-        producer = new Producer<String, String>(config);
+//        props = new Properties();
+//        props.put(zk, dest);
+//        props.put("metadata.broker.list", "localhost:9092");
+//        props.put("serializer.class", "kafka.serializer.StringEncoder");
+//        props.put("request.required.acks", "1");
+//        config = new ProducerConfig(props);
+//        producer = new Producer<String, String>(config);
+
+
     }
 
     String generateTimeStamp() {
@@ -104,6 +116,7 @@ public class SimulatePhoneData implements Runnable {
 
 
         int i = 0;
+//        i = counter;
         String json;
         Random _rand = new Random();
         while(i <= counter) {
@@ -122,10 +135,28 @@ public class SimulatePhoneData implements Runnable {
                     json = gson.toJson(phoneDataArrayList.get(_rand.nextInt(3)));
                 }
             }
-            KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, json);
+            try {
+                postingString = new StringEntity(json);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            };
+            post.setEntity(postingString);
+            post.setHeader("Content-type", "application/json");
+            try {
+                HttpResponse  response = httpClient.execute(post);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+//            KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, json);
            // System.out.println("Simulator dumping json:" + json);
-            producer.send(data);
+//            producer.send(data);
             i++;
         }
+    }
+    public static void main(String[] args) throws IOException {
+        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000);
+        (new Thread(sd)).start();
+
     }
 }

@@ -1,0 +1,6 @@
+{
+  fan:
+    {
+      email : 'foo@bar.com'
+    }
+}

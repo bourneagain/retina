@@ -1,15 +1,16 @@
-package server;
+package retina;
 
 /**
  * Created by sam on 4/25/15.
  */
 
-
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -23,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -42,15 +44,26 @@ public class IngestorServer {
             MIME_DEFAULT_BINARY = "application/octet-stream";
 
     public IngestorServer(int port) throws IOException {
+//        String topic = "phone-data-test";
+//        String key = "mykey";
+//        String zk = "zk.connect";
+//        String dest = "127.0.0.1:2181";
+//        Properties props;
+//        Producer<String, String> producer;
+//        ProducerConfig config;
         myTcpPort = port;
         System.out.println("RETINA INJESTER STARTED .... ... .. ");
         final ServerSocket ss = new ServerSocket(myTcpPort);
+//        final HTTPSession ht =  new HTTPSession(ss.accept());
         Thread t = new Thread(new Runnable() {
             public void run() {
-                try {
-                    while (true)
+                while (true) {
+                    try {
                         new HTTPSession(ss.accept());
-                } catch (IOException ioe) {
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+//                    ht.run();
                 }
             }
         });
@@ -104,12 +117,28 @@ public class IngestorServer {
     }
 
 
-    private class HTTPSession implements Runnable {
+    private class HTTPSession /*implements Runnable */ {
+        String topic = "phone-data-test";
+        String key = "mykey";
+        String zk = "zk.connect";
+        String dest = "127.0.0.1:2181";
+        Properties props;
+        Producer<String, String> producer;
+        ProducerConfig config;
+
         public HTTPSession(Socket s) {
             mySocket = s;
-            Thread t = new Thread(this);
-            t.setDaemon(true);
-            t.start();
+//            Thread t = new Thread(this);
+//            t.setDaemon(true);
+//            t.start();
+            props = new Properties();
+            props.put(zk, dest);
+            props.put("metadata.broker.list", "localhost:9092");
+            props.put("serializer.class", "kafka.serializer.StringEncoder");
+            props.put("request.required.acks", "1");
+            config = new ProducerConfig(props);
+            producer = new Producer<String, String>(config);
+            run();
         }
 
         public void run() {
@@ -175,9 +204,10 @@ public class IngestorServer {
                             read = in.read(buf);
                     }
                     postLine = postLine.trim();
+                    System.out.println("DUMPING TO KAKFA");
                     System.out.println(postLine);
 //                    decodeParms(postLine, parms);
-                    printJSONObject(postLine);
+                    dumpToKafka(postLine);
                 }
 
 
@@ -186,7 +216,7 @@ public class IngestorServer {
 //                if (r == null)
 //                    sendError(HTTP_INTERNALERROR, "SERVER INTERNAL ERROR: Serve() returned a null response.");
 //                else
-                    sendResponse(r.status, r.mimeType, r.header, r.data);
+                sendResponse(r.status, r.mimeType, r.header, r.data);
                 in.close();
             } catch (IOException ioe) {
                 try {
@@ -225,7 +255,7 @@ public class IngestorServer {
 
 
         // added by *sam*
-        private void printJSONObject(String params){
+        private void dumpToKafka(String params){
             Gson gson ;
             GsonBuilder builder;
             builder = new GsonBuilder();
@@ -233,8 +263,12 @@ public class IngestorServer {
             String json;
             json = gson.toJson(params);
 //            Gson gson = new Gson();
-            JsonElement element = gson.fromJson (params, JsonElement.class);
-            JsonObject jsonObj = element.getAsJsonObject();
+//            JsonElement element = gson.fromJson (params, JsonElement.class);
+//            JsonObject jsonObj = element.getAsJsonObject();
+            KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, json);
+            producer.send(data);
+
+
         }
         private void decodeParms(String parms, Properties p) throws InterruptedException {
             if (parms == null)
