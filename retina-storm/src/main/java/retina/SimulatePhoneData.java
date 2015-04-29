@@ -25,8 +25,9 @@ public class SimulatePhoneData implements Runnable {
     int timeinteval;
     GsonBuilder builder;
     Gson gson;
-    String postUrl="http://localhost:1234";// put in your url
-    HttpPost post = new HttpPost(postUrl);
+    String postUrl;// put in your url
+    HttpPost post;
+
     StringEntity  postingString ;//new StringEntity();//convert your pojo to   json
     CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -39,10 +40,12 @@ public class SimulatePhoneData implements Runnable {
 //    String zk = "zk.connect";
 //    String dest = "127.0.0.1:2181";
 
-    SimulatePhoneData(int count, int timeinterval) throws IOException {
+    SimulatePhoneData(int count, int timeinterval, String webServer) throws IOException {
         this.counter = count;
         this.timeinteval = timeinterval;
         builder = new GsonBuilder();
+        postUrl = webServer;
+        post = new HttpPost(postUrl);
 
         gson = builder.create();
 //        props = new Properties();
@@ -70,8 +73,46 @@ public class SimulatePhoneData implements Runnable {
             e.printStackTrace();
         }
         System.out.println("Phone data simulator thread started!");
-        PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "1234", "app1",
-                "lollypop5.0.1 nexus5 m897 LRX22C\napp1 1.0 appname\n");
+
+        // same phone same app but different versions
+        PhoneData p_M = new PhoneData(generateTimeStamp(), "1", "M", "990000862471854", "app1",
+                "lollypop5.0.1 nexus5 m123 LRX22C\napp1 1.0 angybirds\n");
+
+//        PhoneData p_M2 = new PhoneData(generateTimeStamp(), "1", "M", "990000862471854", "app1",
+//                "lollypop5.0.1 nexus5 m123 LRX22C\napp1 2.0 angrybirds\n");
+//
+//        PhoneData p_M3 = new PhoneData(generateTimeStamp(), "1", "M", "990000862471854", "app1",
+//                "kitKat5.0.1 nexus5 m123 LRX22C\napp1 3.0 angrybirds\n");
+//
+//        PhoneData p_M3 = new PhoneData(generateTimeStamp(), "1", "M", "990000862471854", "app1",
+//                "kitKat5.0.1 nexus5 m123 LRX22C\napp2 7.0 subwaysurfers\n");
+//
+//        PhoneData p_M4 = new PhoneData(generateTimeStamp(), "1", "M", "990000862471854", "app1",
+//                "kitKat5.0.1 nexus5 m123 LRX22C\napp1 2.0 subwaysurfers\n");
+//
+//        // different phone same app
+//
+//        PhoneData p_M6 = new PhoneData(generateTimeStamp(), "1", "M", "351756051523999", "app1",
+//                "lollypop5.0.1 nexus4 m123 LRX22C\napp1 1.0 appname\n");
+//
+//        PhoneData p_M7 = new PhoneData(generateTimeStamp(), "1", "M", "351756051523999", "app1",
+//                "lollypop5.0.1 nexus4 m123 LRX22C\napp1 4.0 appname\n");
+//
+//
+//        PhoneData p_M8 = new PhoneData(generateTimeStamp(), "1", "M", "990000862470001", "app1",
+//                "lollypop5.0.1 nexus4 m123123 LRX22C\napp3 4.0 gmail\n");
+//
+//
+//        PhoneData p_M9 = new PhoneData(generateTimeStamp(), "1", "M", "990000862470002", "app1",
+//                "lollypop5.0.1 SamsungGalxay5 m123 LRX000C\napp1 4.0 angybirds\n");
+//
+//
+//        PhoneData p_M10 = new PhoneData(generateTimeStamp(), "1", "M", "99000086247555", "app1",
+//                "kitKat5.0.1 samsungGalaxy4 m245 LGALAXY2C\napp1 1.0 appname\n");
+//
+//        PhoneData p_M11 = new PhoneData(generateTimeStamp(), "1", "M", "99000086777777", "app1",
+//                "lollypop5.0.1 MotoG m990 LMOTO99C\napp1 1.0 appname\n");
+
 
         //if event type is metadata: there will be two lines in the log field, phone metadata and app metadata
 //        phonemetadata - <phoneversion> <phonemodel> <phonebaseband> <phonebuild>
@@ -155,7 +196,15 @@ public class SimulatePhoneData implements Runnable {
         }
     }
     public static void main(String[] args) throws IOException {
-        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000);
+
+        SimulatePhoneData sd = null;
+        try {
+            sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000, args[0]);
+        } catch (IOException e) {
+            System.out.println(" ENTER THE URL WHERE THE INGESTOR IS RUNNING [ with PORT 1234 ] ");
+            e.printStackTrace();
+        }
+//        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000, "http://localhost:1234");
         (new Thread(sd)).start();
 
     }

@@ -34,7 +34,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 public class IngestorServer {
-
+    public static String kafkaAndZooKeeperServer;
     public static final String HTTP_OK = "200 OK", HTTP_REDIRECT = "301 Moved Permanently",
             HTTP_FORBIDDEN = "403 Forbidden", HTTP_NOTFOUND = "404 Not Found",
             HTTP_BADREQUEST = "400 Bad Request", HTTP_INTERNALERROR = "500 Internal Server Error",
@@ -102,6 +102,17 @@ public class IngestorServer {
 
         int port = 1234;
         IngestorServer ris = null;
+
+        try {
+
+            IngestorServer.kafkaAndZooKeeperServer = args[0] ;
+    //            IngestorServer.kafkaAndZooKeeperServer = "192.17.165.10" ;
+
+        } catch (Exception e) {
+            System.out.println(" ENTER THE IP WHERE KAFKA AND ZOOKEEPER IS RUNNING : [ REMOTE ] ");
+            e.printStackTrace();
+        }
+//        IngestorServer.kafkaAndZooKeeperServer = "76.10.1.55"  ;
         try {
             ris = new IngestorServer(port);
         } catch (IOException ioe) {
@@ -121,10 +132,11 @@ public class IngestorServer {
         String topic = "phone-data-test";
         String key = "mykey";
         String zk = "zk.connect";
-        String dest = "127.0.0.1:2181";
+        String dest = IngestorServer.kafkaAndZooKeeperServer+":2181";
         Properties props;
         Producer<String, String> producer;
         ProducerConfig config;
+        Gson gson;
 
         public HTTPSession(Socket s) {
             mySocket = s;
@@ -133,7 +145,7 @@ public class IngestorServer {
 //            t.start();
             props = new Properties();
             props.put(zk, dest);
-            props.put("metadata.broker.list", "localhost:9092");
+            props.put("metadata.broker.list", IngestorServer.kafkaAndZooKeeperServer+":9092");
             props.put("serializer.class", "kafka.serializer.StringEncoder");
             props.put("request.required.acks", "1");
             config = new ProducerConfig(props);
@@ -255,16 +267,15 @@ public class IngestorServer {
 
 
         // added by *sam*
-        private void dumpToKafka(String params){
-            Gson gson ;
-            GsonBuilder builder;
-            builder = new GsonBuilder();
-            gson = builder.create();
-            String json;
-            json = gson.toJson(params);
-//            Gson gson = new Gson();
-//            JsonElement element = gson.fromJson (params, JsonElement.class);
-//            JsonObject jsonObj = element.getAsJsonObject();
+        private void dumpToKafka(String json){
+//            Gson gson ;
+//            GsonBuilder builder;
+//            builder = new GsonBuilder();
+//            gson = builder.create();
+//
+////            Gson gson = new Gson();
+////            JsonElement element = gson.fromJson (params, JsonElement.class);
+////            JsonObject jsonObj = element.getAsJsonObject();
             KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, json);
             producer.send(data);
 

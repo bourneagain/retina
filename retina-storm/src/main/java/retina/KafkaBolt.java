@@ -40,11 +40,13 @@ public class KafkaBolt extends BaseRichBolt
     String topic = "test";
     String key = "mykey";
     String zk = "zk.connect";
+//    String dest = MainTopology.zooKeeperIP;
     String dest = "127.0.0.1:2181";
     Properties props;
     Producer<String, String> producer;
     ProducerConfig config;
-    //private String[] skipWords = {"http://", "https://", "(", "a", "an", "the", "for", "retweet", "RETWEET", "follow", "FOLLOW"};
+    //private String[]
+    // skipWords = {"http://", "https://", "(", "a", "an", "the", "for", "retweet", "RETWEET", "follow", "FOLLOW"};
     @Override
     public void prepare(
             Map                     map,
@@ -55,7 +57,9 @@ public class KafkaBolt extends BaseRichBolt
         collector = outputCollector;
         props = new Properties();
         props.put(zk, dest);
-        props.put("metadata.broker.list", "localhost:9092");
+        props.put("metadata.broker.list", MainTopology.kafkaIP+":9092");
+//        props.put("metadata.broker.list", "localhost:9092");
+//        props.put("metadata.broker.list", "10.240.176.94:9092");
         props.put("serializer.class", "kafka.serializer.StringEncoder");
         props.put("request.required.acks", "1");
         config = new ProducerConfig(props);

@@ -17,9 +17,9 @@ echo "create 'phone-data-test' topic in kafka"
 ~/kafka_2.8.0-0.8.1.1/bin/kafka-topics.sh --create --zookeeper localhost:2181   --replication-factor 1 --partitions 1 --topic phone-data-test
 sleep 1
 exit
-echo ""
-echo ""
-echo "START REALTIME"
+#echo ""
+#echo ""
+#echo "START REALTIME"
 cd /home/sam/druid-0.7.1-rc1/
 java -Xmx512m -Duser.timezone=UTC -Dfile.encoding=UTF-8              -Ddruid.realtime.specFile=/home/sam/retina/retina.spec       -classpath "config/_common:config/realtime:lib/*"               io.druid.cli.Main server realtime 2>&1 > /tmp/realtime.log &
 sleep 1
@@ -35,7 +35,6 @@ sleep 1
 echo ""
 echo "START COORDINATOR"
 java -Xmx256m -Duser.timezone=UTC -Dfile.encoding=UTF-8 -classpath config/_common:config/coordinator:lib/* io.druid.cli.Main server coordinator 2>&1 > /tmp/coordinator.log &
-
 echo ""
 echo "START RETINA APPLICATION"
 cd ~/retina/retina-storm/

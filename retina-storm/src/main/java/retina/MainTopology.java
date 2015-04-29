@@ -17,12 +17,17 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import storm.kafka.*;
+import sun.applet.Main;
 
 class MainTopology
 {
     static String TOPIC_NAME = "phone-data-test";
     static SpoutConfig kafkaConfig;
+    static String zooKeeperIP;
+    static String kafkaIP;
+
     static void setKafkaSpout() {
+//        BrokerHosts brokerHosts = new ZkHosts(MainTopology.zooKeeperIP+":2181");
         BrokerHosts brokerHosts = new ZkHosts("localhost:2181");
         kafkaConfig = new SpoutConfig(brokerHosts, TOPIC_NAME, "", "storm");
         //kafkaConfig.
@@ -33,10 +38,18 @@ class MainTopology
     {
         // create the topology
         TopologyBuilder builder = new TopologyBuilder();
+
+        try {
+//            MainTopology.zooKeeperIP = args[0];
+            MainTopology.kafkaIP = args[0];
+        } catch (Exception e) {
+            System.out.println(" ENTER THE KAFKA SERVER IP ");
+            e.printStackTrace();
+        }
         boolean kafkaSpout  = true;
 
         String sourceSpout = "event-spout";
-        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000);
+//        SimulatePhoneData sd = new SimulatePhoneData(Integer.MAX_VALUE, 2000,);
 //        SimulatePhoneData sd = new SimulatePhoneData(20, 1000);
 
         // attach the tweet spout to the topology - parallelism of 1
@@ -64,18 +77,19 @@ class MainTopology
         // set the config in debugging mode
         conf.setDebug(true);
 
-        if (args != null && args.length > 0) {
+//        if (args != null && args.length > 0) {
 
             // run it in a live cluster
 
             // set the number of workers for running all spout and bolt tasks
-            conf.setNumWorkers(3);
+            //// commenting this for arg0 the value of zookeeper / kafka
+//            conf.setNumWorkers(3);
+//
+//            // create the topology and submit with config
+//            StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+//            (new Thread(sd)).start();
 
-            // create the topology and submit with config
-            StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
-            (new Thread(sd)).start();
-
-        } else {
+//        } else {
 
             // run it in a simulated local cluster
 
@@ -87,7 +101,7 @@ class MainTopology
 
             // submit the topology to the local cluster
             cluster.submitTopology("retina-storm", conf, builder.createTopology());
-            (new Thread(sd)).start();
+//            (new Thread(sd)).start();
             // let the topology run for 300 seconds. note topologies never terminate!
             Utils.sleep(9999000);
 
@@ -96,6 +110,6 @@ class MainTopology
 
             // we are done, so shutdown the local cluster
             cluster.shutdown();
-        }
+//        }
     }
 }
