@@ -17,7 +17,7 @@ $json=$_POST['json'];
 #$json = '{"queryType":"timeseries","dataSource":"test","granularity":"all","aggregations":[{"type":"longSum","fieldName":"errorcount","name":"errorcount"}],"intervals":["2015-4-3T13:58:10/2015-4-3T13:58:40"]}';
 ##$cmd = "curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'{\"queryType\":\"timeBoundary\",\"dataSource\":\"wikipedia\"}'";
 ##$cmd = "curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'".addcslashes($json, '"')."'";
-$cmd = "curl -X POST 'http://localhost:8084/druid/v2/'  -H 'content-type: application/json' -d'".$json."'";
+$cmd = "curl -X POST 'http://104.154.46.154:8082/druid/v2/'  -H 'content-type: application/json' -d'".$json."'";
 $tem = shell_exec($cmd);
 #echo $cmd."|";
 $tem  = json_encode($tem);
@@ -26,5 +26,4 @@ $t = json_decode($message,true);
 $y=($t[0]['result']['errorcount']);
 $ret = array($x, $y);
 echo json_encode($ret);
-
 ?>

@@ -241,9 +241,14 @@ function requestData() {
     temp["fieldName"]="errorcount";
     temp["name"]="errorcount";
     queryMap["aggregations"].push(temp);
-	var maxd= new Date();
-	var mind = new Date();
-	mind.setSeconds(maxd.getSeconds() - period  );
+//	var maxd= new Date();
+    //var maxd= new Date();
+    //var mind = new Date(); 
+    var d1 = new Date();
+    var maxd  = new Date( d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), d1.getUTCHours(), d1.getUTCMinutes(), d1.getUTCSeconds() );
+    var mind = new Date( d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), d1.getUTCHours(), d1.getUTCMinutes(), d1.getUTCSeconds() );
+
+    mind.setSeconds(maxd.getSeconds() - period  );
     var maxd_year = maxd.getFullYear();
     var maxd_month = (maxd.getMonth()+1)%12;
     var maxd_date = maxd.getDate();
