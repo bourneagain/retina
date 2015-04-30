@@ -119,7 +119,8 @@ tr.spaceUnder > td
               </tr>
               </table>
             <div class="btn-group" role="group" aria-label="...">
-              <button type="button" id='query'  class="btn btn-default">query</buttonk>
+              <button type="button" id='query'  class="btn btn-default">ViewStats</button>
+              <button type="button" id='drillQuery'  class="btn btn-default">ViewDrillDown</button>
               <button type="button" id='viewlive'  class="btn btn-default">viewLiveData</button>
             </div>
 
@@ -146,7 +147,11 @@ tr.spaceUnder > td
          		<tbody>
          		</tbody>
         </table>
+<pre id="tsv" style="display:none">
+</pre>
 
+<div id='drilldowndata'>
+<div>
 	</div> <!-- end of right -->
 </div>
 <footer>
@@ -192,7 +197,9 @@ Sample Input :
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
 <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
-<script type="text/javascript" src="js/highcharts.js"></script>
+                        <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
 
 <script>
 
@@ -231,10 +238,10 @@ function formQuery(){
 }
 
 function requestData() {
-    queryMap =  {};
+    var queryMap =  {};
+    queryMap = getValues();
     queryMap['queryType']="timeseries";
-    queryMap['dataSource']="test";
-    queryMap['granularity']="all";
+    //queryMap['granularity']="all";
     var temp={};
     queryMap["aggregations"] = [];
     temp["type"]="longSum";
@@ -335,25 +342,193 @@ $('#viewlive').click(function(){
                     }]
     });        
 });
-$('#query').click(function(){
-        $('#example').show();
-        var table = $('#example').DataTable();    
-         table.destroy();
-        var json = $("#input").val();   
+$('#drillQuery').click(function(){
+	var queryMap = {};
+	queryMap = getValues();
+	queryMap["queryType"] = "groupBy";
+	queryMap["granularity"] = "day";
+        queryMap["dimensions"]=["appid","appversion","appname"];
+	delete queryMap["metric"];
+	delete queryMap["threshold"];
+        console.log(queryMap);
+	
+    $.ajax({
+        type : "post",
+        url: 'c.php', 
+        data: {
+            "json" : JSON.stringify(queryMap)
+        },
+        success: function(point) {
+		
+             console.log("DATA"+point);
+            document.getElementById('tsv').innerHTML = point;
+            // data = data.slice(1, - 1);
+            // console.log("stringdata "+data);
+            // ajaxJson = JSON.parse(data);    
+            // var errorCount =  ajaxJson.result.errorcount;
+            // console.log(errorcount);
+            // var timestamp = (new Date).getTime();
+            // var point = [];
+            // point.push(timestamp); 
+            // point.push(errorCount); 
+             //console.log("BEFORE"+point)
+             //var res = point.split("|");
+             //point = res[1];
+        //     console.log("FINAL"+point);
+        //     var series = chart.series[0],
+        //        shift = series.data.length > 20; // shift if the series is longer than 20
+    
+        //    chart.series[0].addPoint(eval(point), true, shift);
+        //    
+        //    setTimeout(requestData,1000);    
+
+(function($){ // encapsulate jQuery
+	$(function () {
+    Highcharts.data({
+        csv: document.getElementById('tsv').innerHTML,
+        itemDelimiter: '\t',
+        parsed: function (columns) {
+
+            var brands = {},
+                brandsData = [],
+                versions = {},
+                drilldownSeries = [];
+
+           // Parse percentage strings
+           columns[1] = $.map(columns[1], function (value) {
+               if (value.indexOf('%') === value.length - 1) {
+                   value = parseFloat(value);
+               }
+               return value;
+           });
+
+            $.each(columns[0], function (i, name) {
+                var brand,
+                    version;
+
+                if (i >= 0) {
+
+                    // Remove special edition notes
+                    name = name.split(' -')[0];
+
+                    // Split into brand and version
+                    version = name.match(/([0-9]+[\.0-9x]*)/);
+                    if (version) {
+                        version = version[0];
+                    }
+                    brand = name.replace(version, '');
+
+                    // Create the main data
+                    if (!brands[brand]) {
+                        brands[brand] = columns[1][i];
+                    } else {
+                        brands[brand] += columns[1][i];
+                    }
+
+                    // Create the version data
+                    if (version !== null) {
+                        if (!versions[brand]) {
+                            versions[brand] = [];
+                        }
+                        versions[brand].push(['v' + version, columns[1][i]]);
+                    }
+                }
+
+            });
+
+            $.each(brands, function (name, y) {
+                brandsData.push({
+                    name: name,
+                    y: y,
+                    drilldown: versions[name] ? name : null
+                });
+            });
+            $.each(versions, function (key, value) {
+                drilldownSeries.push({
+                    name: key,
+                    id: key,
+                    data: value
+                });
+            });
+
+            // Create the chart
+            $('#container').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Browser market shares. November, 2013'
+                },
+                subtitle: {
+                    text: 'Click the columns to view versions. Source: netmarketshare.com.'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total percent market share'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}%'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                },
+
+                series: [{
+                    name: 'Brands',
+                    colorByPoint: true,
+                    data: brandsData
+                }],
+                drilldown: {
+                    series: drilldownSeries
+                }
+            });
+        }
+    });
+});
+
+
+})(jQuery);
+
+
+        },
+        cache: false
+    });
+
+
+
+});
+
+function getValues(){
         var topic = "test";
-        var radios = $(":radio:checked");
-        //var checkboxes = $(":checkboxes:checked");
-        queryMap = {};
+	var queryMap = {}
         queryMap["dataSource"] = topic;
+        var radios = $(":radio:checked");
+	//console.log("RADIOS " + radios);
+        //var checkboxes = $(":checkboxes:checked");
         for (i = 0; i < radios.length; i++) { 
                    queryMap[radios[i].name] = radios[i].value  ;
         }
         var sliderDates = $("#slider").dateRangeSlider("values");
         var maxd = sliderDates.max;
         var mind = sliderDates.min;
-        var maxd_year = maxd.getFullYear();
+        var maxd_year = maxd.getFullYear()+1;
         var maxd_month = maxd.getMonth()+1;
-        var maxd_date = (maxd.getDate()+1)%31;
+        var maxd_date = maxd.getDate();
         var maxd_str = maxd_year+'-'+maxd_month+'-'+maxd_date;
         var mind_year = mind.getFullYear();
         var mind_month = mind.getMonth()+1;
@@ -372,8 +547,8 @@ $('#query').click(function(){
         queryMap["intervals"].push(intervals);
         var threshold = $("#threshold").val();   
         // debug
-        //queryMap["threshold"] = threshold;
-        queryMap["threshold"] = "10";
+        queryMap["threshold"] = threshold;
+        //queryMap["threshold"] = "10";
 
         var aggregations = $( "#aggField option:selected" ).text();
         aggregations = aggregations.trim();    
@@ -399,7 +574,16 @@ $('#query').click(function(){
        // queryMap["filter"]["dimension"]=filterSelected;
         queryMap["filter"]["dimension"]="eventtype";
         queryMap["filter"]["value"]=filterSelectedValue;
+	return queryMap;
+}
 
+$('#query').click(function(){
+        $('#example').show();
+        var table = $('#example').DataTable();    
+         table.destroy();
+        var json = $("#input").val();   
+	var queryMap = {};
+	queryMap = getValues();
         console.log(queryMap);
         $.ajax({ 
                 type : "post",
