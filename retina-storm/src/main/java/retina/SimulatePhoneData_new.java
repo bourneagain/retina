@@ -35,7 +35,7 @@ public class SimulatePhoneData_new implements Runnable {
     static String[] PhoneModel = {"Nexus4", "Nexus5", "SamsungGalaxy", "MotoX"};
     static String[] OSVersion = {"Lollypop", "Kitkat", "IceCreamSandwich"};
     static int numUsers = 100;
-
+    static boolean logToFile = false;
     GsonBuilder builder;
     Gson gson;
     String postUrl;// put in your url
@@ -126,16 +126,16 @@ public class SimulatePhoneData_new implements Runnable {
         ArrayList<PhoneData> pd = new ArrayList<PhoneData>();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-
         PrintWriter writer = null;
-        try {
-            writer = new PrintWriter("json-meta-"  + Integer.toString(iter) + ".txt", "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (logToFile) {
+            try {
+                writer = new PrintWriter("json-meta-" + Integer.toString(iter) + ".txt", "UTF-8");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
-
         long num = 0;
         for (int i = 0; i<numApps; i++) {//app name
             for (int j = 0; j < AppVersion.length; j++) {
@@ -148,7 +148,9 @@ public class SimulatePhoneData_new implements Runnable {
                                             AppID + Integer.toString(id_num) + " " + AppVersion[j] + " " + AppName + Integer.toString(i) + "\n"));
                             System.out.println("meta logs write to file entry num:" + num);
                             num++;
-                            writer.println(gson.toJson(pd.get(pd.size() - 1)));
+                            if (logToFile) {
+                                writer.println(gson.toJson(pd.get(pd.size() - 1)));
+                            }
 //                            try {
 //                                Thread.sleep(1000);
 //                            } catch (InterruptedException e) {
@@ -160,7 +162,9 @@ public class SimulatePhoneData_new implements Runnable {
             }
         }
 
-        writer.close();
+        if (logToFile) {
+            writer.close();
+        }
         return pd;
     }
 
@@ -169,14 +173,15 @@ public class SimulatePhoneData_new implements Runnable {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         PrintWriter writer = null;
-        try {
-            writer = new PrintWriter("json-HB-" + Integer.toString(iter) + ".txt", "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (logToFile) {
+            try {
+                writer = new PrintWriter("json-HB-" + Integer.toString(iter) + ".txt", "UTF-8");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
-
         long num = 0;
         for (int i = 0; i<numApps; i++) {//app name
             for (int j = 0; j < AppVersion.length; j++) {
@@ -189,7 +194,9 @@ public class SimulatePhoneData_new implements Runnable {
                                             AppID + Integer.toString(id_num) + " " + AppVersion[j] + " " + AppName + "\n"));
                             System.out.println("hb logs write to file entry num:" + num);
                             num++;
-                            writer.println(gson.toJson(pd.get(pd.size() - 1)));
+                            if (logToFile) {
+                                writer.println(gson.toJson(pd.get(pd.size() - 1)));
+                            }
 //                            try {
 //                                Thread.sleep(1000);
 //                            } catch (InterruptedException e) {
@@ -200,7 +207,9 @@ public class SimulatePhoneData_new implements Runnable {
                 }
             }
         }
-        writer.close();
+        if (logToFile) {
+            writer.close();
+        }
         return pd;
     }
 
@@ -209,12 +218,14 @@ public class SimulatePhoneData_new implements Runnable {
         PrintWriter writer = null;
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        try {
-            writer = new PrintWriter("json-error-" + Integer.toString(iter) + ".txt", "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (logToFile) {
+            try {
+                writer = new PrintWriter("json-error-" + Integer.toString(iter) + ".txt", "UTF-8");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         String[] components = {"component1", "component2", "component3", "component4"};
         String[] errorlogs = {
@@ -250,12 +261,16 @@ public class SimulatePhoneData_new implements Runnable {
                                 errorlogs[_rand.nextInt(errorlogs.length)]));
                         System.out.println("error logs write to file entry num:" + num);
                         num++;
-                        writer.println(gson.toJson(pd.get(pd.size() - 1)));
+                        if (logToFile) {
+                            writer.println(gson.toJson(pd.get(pd.size() - 1)));
+                        }
                     }
                 }
             }
         }
-        writer.close();
+        if (logToFile) {
+            writer.close();
+        }
         return pd;
     }
 
