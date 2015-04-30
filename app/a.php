@@ -457,17 +457,17 @@ $('#drillQuery').click(function(){
                     type: 'column'
                 },
                 title: {
-                    text: 'Browser market shares. November, 2013'
+                    text: 'All Deployed Applications stats'
                 },
                 subtitle: {
-                    text: 'Click the columns to view versions. Source: netmarketshare.com.'
+                    text: 'Click the columns to view app versions'
                 },
                 xAxis: {
                     type: 'category'
                 },
                 yAxis: {
                     title: {
-                        text: 'Total percent market share'
+                        text: 'Total error count stats'
                     }
                 },
                 legend: {
@@ -478,18 +478,18 @@ $('#drillQuery').click(function(){
                         borderWidth: 0,
                         dataLabels: {
                             enabled: true,
-                            format: '{point.y:.1f}%'
+                            format: '{point.y}'
                         }
                     }
                 },
 
                 tooltip: {
                     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}%</b> of total<br/>'
                 },
 
                 series: [{
-                    name: 'Brands',
+                    name: 'errorCount',
                     colorByPoint: true,
                     data: brandsData
                 }],
