@@ -15,4 +15,4 @@ RETINAA is a prototype framework that leverages the power of tools like Apache S
 ![alt tag](https://raw.githubusercontent.com/bourneagain/retina/master/report/ui2.png)
 ![alt tag](https://raw.githubusercontent.com/bourneagain/retina/master/report/ui3.png)
 
-This project has been awarded "Best Entrepreneurial Project" in Advanced Distributed Systems(cs525)  class, 2015 [https://courses.engr.illinois.edu/cs525/sp2015/index.html].
+This project has been awarded *"Best Entrepreneurial Project"* in Advanced Distributed Systems(cs525)  class, 2015 [https://courses.engr.illinois.edu/cs525/sp2015/index.html].
